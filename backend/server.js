@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 
 const app = express();
@@ -22,5 +23,8 @@ app.listen(PORT, () => {
 }
 )
 
+const authRoutes = require("./routes/authRoutes");
+
+app.use("/auth", authRoutes);
 
 
