@@ -1,13 +1,14 @@
 require("dotenv").config();
 const express = require("express");
+const transactionRoutes = require("./routes/transactionRoutes");
+const pool = require("./config/db");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 
-const pool = require("./config/db");
 
 app.use(express.json());
 
-const transactionRoutes = require("./routes/transactionRoutes");
 
 const PORT = 3000;
 
@@ -23,7 +24,6 @@ app.listen(PORT, () => {
 }
 )
 
-const authRoutes = require("./routes/authRoutes");
 
 app.use("/auth", authRoutes);
 
