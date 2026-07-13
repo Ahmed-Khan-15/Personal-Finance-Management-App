@@ -2,7 +2,10 @@ const pool = require("../config/db");
 
 const getTransactions = async (req, res) => {
     try {
-        const result = await pool.query("SELECT * FROM transactions");
+
+        const user_id = req.user.id;
+
+        const result = await pool.query("SELECT * FROM transactions WHERE user_id = $1", [user_id]);
         res.json(result.rows);
     }
     catch (error) {
@@ -25,7 +28,8 @@ const getTransactionById = async (req, res) => {
     }
 
     try {
-        const result = await pool.query("SELECT * FROM transactions WHERE id = $1;", [transactionId]);
+        const user_id = req.user.id;
+        const result = await pool.query("SELECT * FROM transactions WHERE id = $1 AND user_id = $2;", [transactionId, user_id]);
         if (result.rowCount === 0) {
             return res.status(404).json({
                 message: "Transaction not found"
@@ -48,36 +52,17 @@ const createTransaction = async (req, res) => {
 
     try {
 
-        const { user_id,
+        const user_id = req.user.id;
+
+        const {
             category_id,
             recurring_transaction_id,
             description,
             amount,
             transaction_type } = req.body;
 
-        if (
-            user_id === undefined ||
-            category_id === undefined ||
-            amount === undefined ||
-            !transaction_type
-        ) {
-            return res.status(400).json({
-                message: "Missing required fields"
-            });
-        }
 
-        const normalizedTransactionType = transaction_type?.toLowerCase();
 
-        if (typeof amount !== "number") {
-            return res.status(400).json({
-                message: "Amount must be a number"
-            });
-        }
-        if (normalizedTransactionType !== "income" && normalizedTransactionType !== "expense") {
-            return res.status(400).json({
-                message: "invalid transaction type!"
-            });
-        }
         const query = `
             INSERT INTO transactions (
                 user_id,
@@ -96,7 +81,7 @@ const createTransaction = async (req, res) => {
             recurring_transaction_id,
             description,
             amount,
-            normalizedTransactionType
+            transaction_type
         ];
         const result = await pool.query(query, values);
         res.status(201).json(result.rows[0]);
@@ -113,16 +98,17 @@ const createTransaction = async (req, res) => {
 const updateTransaction = async (req, res) => {
 
     try {
+
+        const user_id = req.user.id;
+
         const { id } = req.params;
 
         const transactionId = Number(id);
-
         if (Number.isNaN(transactionId)) {
             return res.status(400).json({
                 message: "Invalid transaction ID"
             });
         }
-
 
         const {
             category_id,
@@ -131,28 +117,6 @@ const updateTransaction = async (req, res) => {
             recurring_transaction_id,
             transaction_type
         } = req.body;
-
-
-        if (
-            category_id === undefined ||
-            amount === undefined ||
-            !transaction_type
-        ) {
-            return res.status(400).json({
-                message: "Missing required fields"
-            });
-        }
-        const normalizedTransactionType = transaction_type?.toLowerCase();
-        if (typeof amount !== "number") {
-            return res.status(400).json({
-                message: "Amount must be a number"
-            });
-        }
-        if (normalizedTransactionType !== "income" && normalizedTransactionType !== "expense") {
-            return res.status(400).json({
-                message: "invalid transaction type!"
-            });
-        }
 
         const query = `
             UPDATE transactions
@@ -163,7 +127,7 @@ const updateTransaction = async (req, res) => {
                 recurring_transaction_id = $4,
                 transaction_type = $5
                 
-            WHERE id = $6
+            WHERE id = $6 AND user_id = $7
             RETURNING *;
                 `;
         const values = [
@@ -171,8 +135,9 @@ const updateTransaction = async (req, res) => {
             amount,
             description,
             recurring_transaction_id,
-            normalizedTransactionType,
-            transactionId
+            transaction_type,
+            transactionId,
+            user_id
         ];
         const result = await pool.query(query, values);
         if (result.rowCount === 0) {
@@ -193,29 +158,34 @@ const updateTransaction = async (req, res) => {
 };
 
 
-const deleteTransaction = async (req,res)=>{
+const deleteTransaction = async (req, res) => {
 
-    const { id } = req.params;
+    try {
 
-    const transactionId = Number(id);
 
-    if (Number.isNaN(transactionId)) {
-        return res.status(400).json({
-            message: "Invalid transaction ID"
-        });
-    }
+        const user_id = req.user.id;
 
-    try{
+        const { id } = req.params;
+
+        const transactionId = Number(id);
+
+        if (Number.isNaN(transactionId)) {
+            return res.status(400).json({
+                message: "Invalid transaction ID"
+            });
+        }
+
 
         const query = `
         DELETE FROM transactions
-        WHERE id = $1
-        RETURNING*;`;
+        WHERE id = $1 AND user_id = $2
+        RETURNING *;`;
 
         const value = [
-            transactionId
+            transactionId,
+            user_id
         ];
-        const result = await pool.query(query,value);
+        const result = await pool.query(query, value);
         if (result.rowCount === 0) {
             return res.status(404).json({
                 message: "Transaction not found"
@@ -223,7 +193,7 @@ const deleteTransaction = async (req,res)=>{
         }
         res.status(200).json(result.rows[0]);
     }
-    catch(error){
+    catch (error) {
         console.error(error);
         res.status(500).json({
             message: "something went wrong"
