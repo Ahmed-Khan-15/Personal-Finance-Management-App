@@ -1,9 +1,7 @@
 const Joi = require("joi");
 
 
-const validateTransaction = (req, res, next) => {
-
-   const transactionSchema = Joi.object({
+const transactionSchema = Joi.object({
     category_id: Joi.number().required(),
 
     recurring_transaction_id: Joi.number().allow(null),
@@ -16,17 +14,19 @@ const validateTransaction = (req, res, next) => {
         .valid("income", "expense")
         .required()
 });
+const validateTransaction = (req, res, next) => {
 
 
-const { error } = transactionSchema.validate(req.body);
 
-if (error) {
-    return res.status(400).json({
-        message: error.details[0].message
-    });
-}
+    const { error } = transactionSchema.validate(req.body);
 
+    if (error) {
+        return res.status(400).json({
+            message: error.details[0].message
+        });
+    }
 
+    next();
 };
 
 module.exports = validateTransaction;
