@@ -1,5 +1,5 @@
 const express = require("express");
-
+const authMiddleware = require("../middleware/authMiddleware");
 const router = express.Router();
 
 const { getCategory , 
@@ -9,13 +9,13 @@ const { getCategory ,
         deleteCategory
 } = require("../controllers/categoryControllers");
 
-router.get("/", getCategory);
-router.get("/:id", getCategoryById);
+router.get("/",authMiddleware, getCategory);
+router.get("/:id",authMiddleware, getCategoryById);
 
-router.post("/", createCategory);
-router.put("/:id", updateCategory);
+router.post("/",authMiddleware, createCategory);
+router.put("/:id",authMiddleware, updateCategory);
 
-router.delete("/:id", deleteCategory);
+router.delete("/:id",authMiddleware, deleteCategory);
 
 module.exports = router;
 

@@ -1,4 +1,4 @@
-
+const pool = require("../config/db");
 const getRecurringTransactions = async (req, res) => {
 
     try {

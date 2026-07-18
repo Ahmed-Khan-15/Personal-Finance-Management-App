@@ -1,20 +1,23 @@
 require("dotenv").config();
 const express = require("express");
-const transactionRoutes = require("./routes/transactionRoutes");
 const pool = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const portfolioRoutes = require("./routes/portfolioRoutes");
+const categoriesRoutes = require("./routes/categoryRoutes");
+const transactionRoutes = require("./routes/transactionRoutes");
+const recurringTransactionRoutes = require("./routes/recurringTransactionRoutes");
 const app = express();
 
 const PORT = 3000;
 
 app.use(express.json());
-app.use("/transactions", transactionRoutes );
 app.use("/auth", authRoutes);
 app.use("/dashboard", dashboardRoutes);
-app.use("/transactions", transactionRoutes );
 app.use("/portfolio", portfolioRoutes);
+app.use("/categories", categoriesRoutes );
+app.use("/transactions", transactionRoutes );
+app.use("/recurring_transactions", recurringTransactionRoutes);
 
 app.get("/", (req, res) => {
     res.send("Welcome to personal finance manager api!")
