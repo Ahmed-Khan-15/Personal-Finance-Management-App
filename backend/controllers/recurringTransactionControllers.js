@@ -1,6 +1,6 @@
 const pool = require("../config/db");
 
-const { generateMonthlyTransactions } = require("../services/recurringTransactionService");
+const { generateRecurringTransaction } = require("../services/recurringTransactionService");
 
 const getRecurringTransactions = async (req, res) => {
 
@@ -33,10 +33,9 @@ const generateRecurringTransactions = async (req, res) => {
         for (let i = 0; i < result.rows.length; i++) {
             let recurringTransaction = result.rows[i];
             
-            if(recurringTransaction.repeat_interval === "monthly"){
-                const generatedCount = await generateMonthlyTransactions(recurringTransaction);
+                const generatedCount = await generateRecurringTransaction(recurringTransaction);
                 totalGenerated = totalGenerated + generatedCount;
-            }
+            
         }
 
         res.status(200).json({

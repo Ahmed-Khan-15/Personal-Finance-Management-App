@@ -1,6 +1,6 @@
 const pool = require("../config/db");
 
-const generateMonthlyTransactions = async (recurringTransaction) => {
+const generateRecurringTransaction = async (recurringTransaction) => {
 
     const {
         id,
@@ -10,7 +10,8 @@ const generateMonthlyTransactions = async (recurringTransaction) => {
         amount,
         transaction_type,
         start_date,
-        end_date
+        end_date,
+        repeat_interval
     } = recurringTransaction;
 
     const startDate = new Date(start_date);
@@ -37,7 +38,7 @@ const generateMonthlyTransactions = async (recurringTransaction) => {
                 transaction_date,
                 recurrence_date
             )
-            VALUES ($1,$2,$3,$4,$5,$6,$7,$7)
+            VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
             ON CONFLICT (recurring_transaction_id, recurrence_date)
             DO NOTHING
             RETURNING *`,
@@ -48,6 +49,7 @@ const generateMonthlyTransactions = async (recurringTransaction) => {
                 description,
                 amount,
                 transaction_type,
+                currentDate,
                 currentDate
             ]
         );
@@ -56,12 +58,24 @@ const generateMonthlyTransactions = async (recurringTransaction) => {
             generatedCount++;
         }
 
-        currentDate.setMonth(currentDate.getMonth() + 1);
+        if (repeat_interval === "daily"){
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        else if (repeat_interval === "weekly"){
+            currentDate.setDate(currentDate.getDate() + 7);
+        }
+        else if (repeat_interval === "monthly"){
+            currentDate.setMonth(currentDate.getMonth() + 1);
+        }
+        else if (repeat_interval === "yearly"){
+            currentDate.setFullYear(currentDate.getFullYear() + 1);
+        }
+
     }
 
     return generatedCount;
 };
 
 module.exports = {
-    generateMonthlyTransactions
+    generateRecurringTransaction
 };
