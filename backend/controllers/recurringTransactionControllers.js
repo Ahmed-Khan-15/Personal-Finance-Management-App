@@ -1,4 +1,7 @@
 const pool = require("../config/db");
+
+const { generateMonthlyTransactions } = require("../services/recurringTransactionService");
+
 const getRecurringTransactions = async (req, res) => {
 
     try {
@@ -16,6 +19,40 @@ const getRecurringTransactions = async (req, res) => {
     }
 
 };
+
+const generateRecurringTransactions = async (req, res) => {
+
+    try {
+        const user_id = req.user.id;
+
+        const result = await pool.query("SELECT * FROM recurring_transactions WHERE user_id = $1", [user_id]);
+
+        let totalGenerated = 0;
+
+         
+        for (let i = 0; i < result.rows.length; i++) {
+            let recurringTransaction = result.rows[i];
+            
+            if(recurringTransaction.repeat_interval === "monthly"){
+                const generatedCount = await generateMonthlyTransactions(recurringTransaction);
+                totalGenerated = totalGenerated + generatedCount;
+            }
+        }
+
+        res.status(200).json({
+            message: "Created Recurring Transactions Successfully!",
+            totalGenerated
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "something went wrong"
+        });
+}
+};
+
+
 const getRecurringTransactionById = async (req, res) => {
 
     try {
@@ -219,5 +256,6 @@ module.exports = {
     createRecurringTransaction,
     getRecurringTransactionById,
     updateRecurringTransaction,
-    deleteRecurringTransaction
+    deleteRecurringTransaction,
+    generateRecurringTransactions
 };

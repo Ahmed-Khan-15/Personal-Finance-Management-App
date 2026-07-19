@@ -8,10 +8,12 @@ const { getRecurringTransactions,
     createRecurringTransaction,
     getRecurringTransactionById,
     updateRecurringTransaction,
-    deleteRecurringTransaction
+    deleteRecurringTransaction,
+    generateRecurringTransactions
 } = require("../controllers/recurringTransactionControllers");
 
 router.get("/", authMiddleware, getRecurringTransactions);
+router.get("/generate", authMiddleware, generateRecurringTransactions);
 router.get("/:id", authMiddleware, getRecurringTransactionById);
 
 router.post("/", authMiddleware, validateRecurringTransaction, createRecurringTransaction);
