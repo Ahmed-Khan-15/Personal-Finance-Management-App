@@ -114,7 +114,6 @@ const updateTransaction = async (req, res) => {
             category_id,
             amount,
             description,
-            recurring_transaction_id,
             transaction_type
         } = req.body;
 
@@ -124,17 +123,15 @@ const updateTransaction = async (req, res) => {
                 category_id = $1,
                 amount = $2,
                 description = $3,
-                recurring_transaction_id = $4,
-                transaction_type = $5
+                transaction_type = $4
                 
-            WHERE id = $6 AND user_id = $7
+            WHERE id = $5 AND user_id = $6
             RETURNING *;
                 `;
         const values = [
             category_id,
             amount,
             description,
-            recurring_transaction_id,
             transaction_type,
             transactionId,
             user_id

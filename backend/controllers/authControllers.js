@@ -1,6 +1,9 @@
 const bcrypt = require("bcrypt");
 const pool = require("../config/db");
 const jwt = require("jsonwebtoken");
+const {
+    processUserRecurringTransactions
+} = require("../services/recurringTransactionService");
 
 const signup = async (req, res) => {
 
@@ -80,6 +83,8 @@ const login = async (req, res) => {
                 message: "Invalid email or password."
             });
         }
+
+        await processUserRecurringTransactions(result.rows[0].id);
 
         const token = jwt.sign(
             { id: result.rows[0].id },

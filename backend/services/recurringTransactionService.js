@@ -58,16 +58,16 @@ const generateRecurringTransaction = async (recurringTransaction) => {
             generatedCount++;
         }
 
-        if (repeat_interval === "daily"){
+        if (repeat_interval === "daily") {
             currentDate.setDate(currentDate.getDate() + 1);
         }
-        else if (repeat_interval === "weekly"){
+        else if (repeat_interval === "weekly") {
             currentDate.setDate(currentDate.getDate() + 7);
         }
-        else if (repeat_interval === "monthly"){
+        else if (repeat_interval === "monthly") {
             currentDate.setMonth(currentDate.getMonth() + 1);
         }
-        else if (repeat_interval === "yearly"){
+        else if (repeat_interval === "yearly") {
             currentDate.setFullYear(currentDate.getFullYear() + 1);
         }
 
@@ -76,6 +76,25 @@ const generateRecurringTransaction = async (recurringTransaction) => {
     return generatedCount;
 };
 
+const processUserRecurringTransactions = async (user_id) => {
+
+    const query = `SELECT * FROM recurring_transactions WHERE user_id = $1`;
+
+    const result = await pool.query(query, [user_id]);
+
+    let totalGenerated = 0;
+
+    for (let i = 0; i < result.rows.length; i++) {
+        let recurringTransaction = result.rows[i];
+
+        const generatedCount = await generateRecurringTransaction(recurringTransaction);
+        totalGenerated = totalGenerated + generatedCount;
+
+    }
+    return totalGenerated;
+};
+
 module.exports = {
-    generateRecurringTransaction
+    generateRecurringTransaction,
+    processUserRecurringTransactions
 };
