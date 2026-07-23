@@ -1,4 +1,5 @@
 require("dotenv").config();
+const cors = require("cors");
 const express = require("express");
 const pool = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
@@ -8,7 +9,9 @@ const categoriesRoutes = require("./routes/categoryRoutes");
 const transactionRoutes = require("./routes/transactionRoutes");
 const recurringTransactionRoutes = require("./routes/recurringTransactionRoutes");
 const app = express();
-
+app.use(cors({
+    origin: "http://localhost:5173"
+}));
 const PORT = 3000;
 
 app.use(express.json());
