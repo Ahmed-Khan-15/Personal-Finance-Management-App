@@ -1,8 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import login from "../services/authServices";
+import {login} from "../services/authServices";
+
 
 function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -13,6 +15,7 @@ function Login() {
       const data = await login({ email, password });
       console.log(data);
       localStorage.setItem("token",data.token)
+      navigate("/dashboard");
     }
     catch(error){
       console.error(error);

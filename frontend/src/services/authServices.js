@@ -1,6 +1,6 @@
 import api from "../api/axios";
 
-async function login({
+export async function login({
     email,
     password
 }){
@@ -14,4 +14,8 @@ async function login({
 
 };
 
-export default login
+export function logout (){
+    localStorage.removeItem("token");
+};
+
+ 
