@@ -19,16 +19,24 @@ const getDashboard = async (req, res) => {
 
         const recentTransactionsQuery = `SELECT * FROM transactions WHERE user_id = $1 
                              AND transaction_date >= DATE_TRUNC('month', CURRENT_DATE)
-                             AND transaction_date < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month';`;
+                             AND transaction_date < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month'
+                             ORDER BY transaction_date DESC
+                             LIMIT 5;`;
 
+
+        const recentTransactions = await pool.query(recentTransactionsQuery, [user_id]);
         const income = await pool.query(incomeQuery, [user_id]);
         const expense = await pool.query(expenseQuery, [user_id]);
-        const recentTransactions = await pool.query(recentTransactionsQuery, [user_id]);
 
+        const incomeAmount = Number(income.rows[0].monthly_income);
+        const expenseAmount = Number(expense.rows[0].monthly_expense);
+
+        const balance = incomeAmount - expenseAmount;
 
         res.json({
-            income: income.rows[0].monthly_income,
-            expense: expense.rows[0].monthly_expense,
+            income: incomeAmount,
+            expense: expenseAmount,
+            balance,
             recentTransactions: recentTransactions.rows
         });
 

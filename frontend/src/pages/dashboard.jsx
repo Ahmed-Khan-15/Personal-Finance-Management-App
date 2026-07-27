@@ -39,8 +39,17 @@ function Dashboard() {
     }
     
     const transactionList = dashboard.recentTransactions.map((transaction) => {
-        return <h2>{transaction.description}</h2>;
+        return (
+            
+        <div key = {transaction.id}>
+        <strong>{transaction.description}</strong>
+        <p>{transaction.amount}</p>
+        <p>{transaction.transaction_type}</p>
+        </div>
+            
+        );
     })
+
     return (
         <>
             <h1>Dashboard</h1>
@@ -49,8 +58,11 @@ function Dashboard() {
 
             <h2>Expense: {dashboard.expense}</h2>
 
-            <h2>Recent Transactions</h2>
+            <h2>Balance: {dashboard.balance}</h2>
 
+            <h2>Monthly Transactions</h2>
+
+            {transactionList}
 
             <button onClick={handleLogout}>
                 Logout
