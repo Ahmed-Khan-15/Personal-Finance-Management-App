@@ -38,17 +38,31 @@ function Dashboard() {
         return <h1>Loading...</h1>;
     }
     
-    const transactionList = dashboard.recentTransactions.map((transaction) => {
+    const categoryList = dashboard.categories.map((category) => {
+
+        const transactionList = category.transactions.map( (transaction) =>{
+        
+            return (
+                <div key = {transaction.id}>
+            <strong>{transaction.description}</strong>
+            <p>Amount: {transaction.amount}</p>
+            <p>{transaction.transaction_type}</p>
+            <p>Date: {transaction.transaction_date}</p>
+            </div>
+                
+            );
+        
+        })
         return (
-            
-        <div key = {transaction.id}>
-        <strong>{transaction.description}</strong>
-        <p>{transaction.amount}</p>
-        <p>{transaction.transaction_type}</p>
-        </div>
-            
-        );
-    })
+        
+    <div key = {category.id}>
+    <strong>{category.name}</strong>
+    <p>Total: {category.total}</p>
+    {transactionList}
+    <hr />
+    </div>
+    );
+})
 
     return (
         <>
@@ -58,11 +72,11 @@ function Dashboard() {
 
             <h2>Expense: {dashboard.expense}</h2>
 
-            <h2>Balance: {dashboard.balance}</h2>
+            <h2>Savings: {dashboard.savings}</h2>
 
             <h2>Monthly Transactions</h2>
 
-            {transactionList}
+            {categoryList}
 
             <button onClick={handleLogout}>
                 Logout
