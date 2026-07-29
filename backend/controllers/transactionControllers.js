@@ -5,7 +5,19 @@ const getTransactions = async (req, res) => {
 
         const user_id = req.user.id;
 
-        const result = await pool.query("SELECT * FROM transactions WHERE user_id = $1", [user_id]);
+        const result = await pool.query(`SELECT t.id,
+                                                t.description,
+                                                t.amount,
+                                                t.transaction_type,
+                                                t.transaction_date,
+                                                c.id AS category_id,
+                                                c.name AS category_name
+                                                FROM transactions t
+                                                JOIN categories c
+                                                    ON t.category_id = c.id
+                                                WHERE t.user_id = $1
+                                                ORDER BY
+                                                t.transaction_date DESC;`, [user_id]);
         res.json(result.rows);
     }
     catch (error) {
