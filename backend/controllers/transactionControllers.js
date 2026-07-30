@@ -4,7 +4,42 @@ const getTransactions = async (req, res) => {
     try {
 
         const user_id = req.user.id;
-
+        const { filter } = req.query;
+        if (
+            filter !== "this_month" &&
+            filter !== "3_months" &&
+            filter !== "6_months" &&
+            filter !== "1_year" &&
+            filter !== "all_time"
+        ) {
+            return res.status(400).json({
+                message: "Invalid filter"
+            });
+        }
+        let dateCondition = "";
+        if (filter === "this_month") {
+            dateCondition = `
+        AND transaction_date >= DATE_TRUNC('month', CURRENT_DATE)
+        AND transaction_date < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month' `;
+        }
+        else if (filter === "3_months") {
+            dateCondition = `
+        AND transaction_date >= DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '2 month'
+        AND transaction_date < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month' `;
+        }
+        else if (filter === "6_months") {
+            dateCondition = `
+        AND transaction_date >= DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '5 month'
+        AND transaction_date < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month' `;
+        }
+        else if (filter === "1_year") {
+            dateCondition = `
+        AND transaction_date >= DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '11 month'
+        AND transaction_date < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month' `;
+        }
+        else {
+            dateCondition = "";
+        }
         const result = await pool.query(`SELECT t.id,
                                                 t.description,
                                                 t.amount,
@@ -15,10 +50,47 @@ const getTransactions = async (req, res) => {
                                                 FROM transactions t
                                                 JOIN categories c
                                                     ON t.category_id = c.id
-                                                WHERE t.user_id = $1
+                                                WHERE t.user_id = $1 ${dateCondition}
                                                 ORDER BY
                                                 t.transaction_date DESC;`, [user_id]);
-        res.json(result.rows);
+
+        const groupedTransactions = {};
+
+        for (let i = 0; i < result.rows.length; i++) {
+            const transaction = result.rows[i];
+
+            const monthYear = new Date(transaction.transaction_date).toLocaleDateString("en-US",
+                {
+                    month: "long",
+                    year: "numeric"
+                }
+            );
+
+            if (!groupedTransactions[monthYear]) {
+                groupedTransactions[monthYear] = {
+                    month: monthYear,
+                    transactions: []
+                };
+
+            }
+
+            groupedTransactions[monthYear].transactions.push({
+                id: transaction.id,
+                description: transaction.description,
+                amount: transaction.amount,
+                transaction_type: transaction.transaction_type,
+                transaction_date: transaction.transaction_date,
+                category_name: transaction.category_name
+            });
+
+
+        }
+
+        const months = Object.values(groupedTransactions);
+
+        res.json({
+            months
+        });
     }
     catch (error) {
         console.error(error);
@@ -212,11 +284,67 @@ const deleteTransaction = async (req, res) => {
 };
 
 
+const deleteTransactions = async (req, res) => {
+    try {
+
+        const user_id = req.user.id;
+
+        const { transactionIds } = req.body;
+
+        if (
+            !Array.isArray(transactionIds) ||
+            transactionIds.length === 0
+        ) {
+            return res.status(400).json({
+                message: "No transactions selected"
+            });
+        }
+
+        const valid = transactionIds.every(id => Number.isInteger(id));
+
+        if (!valid) {
+            return res.status(400).json({
+                message: "Invalid transaction ID"
+            });
+        }
+
+
+        const query = `
+        DELETE FROM transactions
+        WHERE id = ANY($1) AND user_id = $2
+        RETURNING *;`;
+
+        const value = [
+            transactionIds,
+            user_id
+        ];
+        const result = await pool.query(query, value);
+        if (result.rowCount === 0) {
+            return res.status(404).json({
+                message: "Transaction not found"
+            });
+        }
+        res.status(200).json({
+            message: "Transactions deleted successfully",
+            deleted: result.rowCount
+        });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "something went wrong"
+        });
+    }
+
+};
+
+
 
 module.exports = {
     getTransactions,
     createTransaction,
     getTransactionById,
     updateTransaction,
+    deleteTransactions,
     deleteTransaction
 };

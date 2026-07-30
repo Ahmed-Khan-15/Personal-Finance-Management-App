@@ -5,6 +5,7 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import PublicRoute from "./components/PublicRoute.jsx";
 import Dashboard from "./pages/dashboard.jsx";
 import Portfolio from "./pages/portfolio.jsx";
+import Transactions from "./pages/transactions.jsx";
 
 
 function App() {
@@ -41,6 +42,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Portfolio />
+            </ProtectedRoute>
+          }
+        >
+        </Route>
+        <Route
+          path="/transactions"
+          element={
+            <ProtectedRoute>
+              <Transactions />
             </ProtectedRoute>
           }
         >
