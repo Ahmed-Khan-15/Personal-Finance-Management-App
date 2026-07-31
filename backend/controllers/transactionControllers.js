@@ -143,7 +143,8 @@ const createTransaction = async (req, res) => {
             recurring_transaction_id,
             description,
             amount,
-            transaction_type } = req.body;
+            transaction_type,
+            transaction_date } = req.body;
 
 
 
@@ -154,7 +155,8 @@ const createTransaction = async (req, res) => {
                 recurring_transaction_id,
                 description,
                 amount,
-                transaction_type
+                transaction_type,
+                transaction_date
                 )
                 VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING *;
@@ -165,7 +167,8 @@ const createTransaction = async (req, res) => {
             recurring_transaction_id,
             description,
             amount,
-            transaction_type
+            transaction_type,
+            transaction_date
         ];
         const result = await pool.query(query, values);
         res.status(201).json(result.rows[0]);

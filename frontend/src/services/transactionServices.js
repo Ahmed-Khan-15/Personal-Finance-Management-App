@@ -12,4 +12,36 @@ export async function getTransactions(filter) {
 
 };
 
-export default getTransactions;
+export async function postTransaction({
+    category_id,
+    recurring_transaction_id,
+    description,
+    amount,
+    transaction_type,
+    transaction_date
+
+}) {
+
+    const response = await api.post("/transactions", {
+        category_id,
+        recurring_transaction_id,
+        description,
+        amount,
+        transaction_type
+    });
+
+    return response.data
+
+};
+
+export async function deleteTransactions(transactionIds) {
+
+    const response = await api.delete("/transactions", {
+        data: {
+            transactionIds
+        }
+    });
+
+    return response.data;
+
+};

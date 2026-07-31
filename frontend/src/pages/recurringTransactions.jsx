@@ -1,24 +1,22 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../services/authServices";
 import {
-    getTransactions,
-    deleteTransactions,
-} from "../services/transactionServices";
+    getRecurringTransactions,
+    deleteRecurringTransactions,
+} from "../services/recurringTransactionsServices";
 
-function Transactions() {
+function RecurringTransactions() {
     const navigate = useNavigate();
 
     // State
     const [deleteMode, setDeleteMode] = useState(false);
     const [selectedTransactions, setSelectedTransactions] = useState([]);
     const [transactions, setTransactions] = useState(null);
-    const [filter, setFilter] = useState("this_month");
 
     // Data Fetching
     async function loadTransactions() {
         try {
-            const data = await getTransactions(filter);
+            const data = await getRecurringTransactions();
             setSelectedTransactions([]);
             setTransactions(data);
         } catch (error) {
@@ -28,7 +26,7 @@ function Transactions() {
 
     useEffect(() => {
         loadTransactions();
-    }, [filter]);
+    }, []);
 
     // Event Handlers
     function handleLogout() {
@@ -58,39 +56,35 @@ function Transactions() {
     }
 
     // Render Helpers
-    const monthList = transactions.months.map((month) => {
-        const transactionList = month.transactions.map((transaction) => {
-            return (
-                <div key={transaction.id}>
-                    <strong>{transaction.description}</strong>
-                    <p>
-                        {transaction.transaction_type === "income"
-                            ? `+${transaction.amount}`
-                            : `-${transaction.amount}`}
-                    </p>
-                    <p>{transaction.transaction_type}</p>
-                    <p>
-                        Date:{" "}
-                        {new Date(transaction.transaction_date).toLocaleDateString()}
-                    </p>
-                    {deleteMode ? (
-                        <input
-                            type="checkbox"
-                            checked={selectedTransactions.includes(transaction.id)}
-                            onChange={() => handleCheckbox(transaction.id)}
-                        />
-                    ) : (
-                        <button>Edit</button>
-                    )}
-                </div>
-            );
-        });
-
+    const transactionList = transactions.map((transaction) => {
         return (
-            <div key={month.month}>
-                <h1>{month.month}</h1>
-                {transactionList}
-                <hr />
+            <div key={transaction.id}>
+                <strong>{transaction.description}</strong>
+
+                <p>
+                    {transaction.transaction_type === "income"
+                        ? `+${transaction.amount}`
+                        : `-${transaction.amount}`}
+                </p>
+
+                <p>{transaction.transaction_type}</p>
+
+                <p>
+                    Start Date: {new Date(transaction.start_date).toLocaleDateString()}
+                </p>
+                <p>End Date: {new Date(transaction.end_date).toLocaleDateString()}</p>
+
+                <p>{transaction.repeat_interval}</p>
+
+                {deleteMode ? (
+                    <input
+                        type="checkbox"
+                        checked={selectedTransactions.includes(transaction.id)}
+                        onChange={() => handleCheckbox(transaction.id)}
+                    />
+                ) : (
+                    <button>Edit</button>
+                )}
             </div>
         );
     });
@@ -98,20 +92,18 @@ function Transactions() {
     // Main UI
     return (
         <>
-            <h1>Transactions</h1>
+            <h1>Recurring Transactions</h1>
 
-            <button onClick={() => navigate("/recurring-transactions")}>
-                Recurring Transactions
-            </button>
+            <button onClick={() => navigate("/transactions")}>Transactions</button>
 
-            <button>Add Transaction</button>
+            <button>Add Recurring Transaction</button>
 
             {deleteMode ? (
                 <>
                     <button
                         disabled={selectedTransactions.length === 0}
                         onClick={async () => {
-                            await deleteTransactions(selectedTransactions);
+                            await deleteRecurringTransactions(selectedTransactions);
                             setSelectedTransactions([]);
                             setDeleteMode(false);
                             await loadTransactions();
@@ -136,24 +128,15 @@ function Transactions() {
                         setSelectedTransactions([]);
                     }}
                 >
-                    Delete Transaction
+                    Delete Recurring Transaction
                 </button>
             )}
 
-            <h2>Filter</h2>
-
-            <button onClick={() => setFilter("this_month")}>This Month</button>
-            <button onClick={() => setFilter("3_months")}>3 Months</button>
-            <button onClick={() => setFilter("6_months")}>6 Months</button>
-            <button onClick={() => setFilter("1_year")}>1 year</button>
-            <button onClick={() => setFilter("all_time")}>All Time</button>
-            <button>Custom Range</button>
-
-            {monthList}
+            <div>{transactionList}</div>
 
             <button onClick={handleLogout}>Logout</button>
         </>
     );
 }
 
-export default Transactions;
+export default RecurringTransactions;

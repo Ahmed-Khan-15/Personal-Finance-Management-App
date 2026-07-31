@@ -6,6 +6,7 @@ import PublicRoute from "./components/PublicRoute.jsx";
 import Dashboard from "./pages/dashboard.jsx";
 import Portfolio from "./pages/portfolio.jsx";
 import Transactions from "./pages/transactions.jsx";
+import RecurringTransactions from "./pages/recurringTransactions.jsx";
 
 
 function App() {
@@ -55,6 +56,14 @@ function App() {
           }
         >
         </Route>
+        <Route
+          path="/recurring-transactions"
+          element={
+            <ProtectedRoute>
+              <RecurringTransactions />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   );

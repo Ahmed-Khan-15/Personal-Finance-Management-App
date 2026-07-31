@@ -127,6 +127,7 @@ const createRecurringTransaction = async (req, res) => {
             end_date
         ];
         const result = await pool.query(query, values);
+        await generateRecurringTransaction(result.rows[0]);
         res.status(201).json(result.rows[0]);
 
     }
@@ -210,33 +211,45 @@ const deleteRecurringTransaction = async (req, res) => {
     try {
 
         const user_id = req.user.id;
-        const { id } = req.params;
 
-        const recurringTransactionId = Number(id);
+        const { recurringTransactionIds } = req.body;
 
-        if (Number.isNaN(recurringTransactionId)) {
+        if (
+            !Array.isArray(recurringTransactionIds) ||
+            recurringTransactionIds.length === 0
+        ) {
             return res.status(400).json({
-                message: "Invalid recurring transaction ID!"
+                message: "No transactions selected"
             });
         }
 
+        const valid = recurringTransactionIds.every(id => Number.isInteger(id));
+
+        if (!valid) {
+            return res.status(400).json({
+                message: "Invalid transaction ID"
+            });
+        }
 
         const query = `
         DELETE FROM recurring_transactions
-        WHERE id = $1 AND user_id = $2
+        WHERE id = ANY($1) AND user_id = $2
         RETURNING *;`;
 
         const value = [
-            recurringTransactionId,
+            recurringTransactionIds,
             user_id
         ];
         const result = await pool.query(query, value);
         if (result.rowCount === 0) {
             return res.status(404).json({
-                message: "Recurring transaction not found"
+                message: "Transaction not found"
             });
         }
-        res.status(200).json(result.rows[0]);
+        res.status(200).json({
+            message: "Recurring Transactions deleted successfully",
+            deleted: result.rowCount
+        });
 
     }
     catch (error) {
