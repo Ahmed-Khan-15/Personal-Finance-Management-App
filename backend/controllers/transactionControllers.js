@@ -158,7 +158,7 @@ const createTransaction = async (req, res) => {
                 transaction_type,
                 transaction_date
                 )
-                VALUES ($1, $2, $3, $4, $5, $6)
+                VALUES ($1, $2, $3, $4, $5, $6, $7)
                 RETURNING *;
                 `;
         const values = [
@@ -201,8 +201,11 @@ const updateTransaction = async (req, res) => {
             category_id,
             amount,
             description,
-            transaction_type
+            transaction_type,
+            transaction_date
         } = req.body;
+
+
 
         const query = `
             UPDATE transactions
@@ -210,9 +213,10 @@ const updateTransaction = async (req, res) => {
                 category_id = $1,
                 amount = $2,
                 description = $3,
-                transaction_type = $4
+                transaction_type = $4,
+                transaction_date = $5
                 
-            WHERE id = $5 AND user_id = $6
+            WHERE id = $6 AND user_id = $7
             RETURNING *;
                 `;
         const values = [
@@ -220,6 +224,7 @@ const updateTransaction = async (req, res) => {
             amount,
             description,
             transaction_type,
+            transaction_date,
             transactionId,
             user_id
         ];

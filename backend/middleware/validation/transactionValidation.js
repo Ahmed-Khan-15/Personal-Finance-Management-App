@@ -12,7 +12,10 @@ const transactionSchema = Joi.object({
 
     transaction_type: Joi.string()
         .valid("income", "expense")
-        .required()
+        .required(),
+
+    transaction_date: Joi.date().required()
+
 });
 const validateTransaction = (req, res, next) => {
 
@@ -21,6 +24,8 @@ const validateTransaction = (req, res, next) => {
     const { error } = transactionSchema.validate(req.body);
 
     if (error) {
+        console.log(error.details);
+
         return res.status(400).json({
             message: error.details[0].message
         });

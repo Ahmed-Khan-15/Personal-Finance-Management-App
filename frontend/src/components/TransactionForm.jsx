@@ -1,22 +1,19 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getCategories } from "../services/categoryServices";
-import { postTransaction } from "../services/transactionServices";
-import { postRecurringTransaction } from "../services/recurringTransactionsServices";
-import { postCategory } from "../services/categoryServices";
+import { getCategories, postCategory } from "../services/categoryServices";
 
 
 function TransactionForm({ title, initialData, onSubmit }) {
     const navigate = useNavigate();
     const [categories, setCategories] = useState([]);
     const [showCategoryInput, setShowCategoryInput] = useState(false);
-    const [newCategory, setNewCategory] = useState(""); 
+    const [newCategory, setNewCategory] = useState("");
     const [formData, setFormData] = useState({
         category_id: "",
         description: "",
         amount: "",
         transaction_type: "expense",
-        transaction_date: "1",
+        transaction_date: new Date().toISOString().split("T")[0],
         isRecurring: false,
         repeat_interval: "monthly",
         start_date: "",
@@ -31,23 +28,21 @@ function TransactionForm({ title, initialData, onSubmit }) {
             description: "",
             amount: "",
             transaction_type: "expense",
-            transaction_date: "1",
+            transaction_date: new Date().toISOString().split("T")[0],
             isRecurring: false,
             repeat_interval: "monthly",
             start_date: "",
-            end_date: null,
+            end_date: "",
         });
         navigate("/transactions");
     }
 
     function handleChange(e) {
         const { name, value, type, checked } = e.target;
-        setFormData({
-            ...formData,
-            [name]: type === "checkbox" ?
-                checked :
-                value
-        });
+        setFormData(prev => ({
+            ...prev,
+            [name]: type === "checkbox" ? checked : value
+        }));
 
     }
 
@@ -56,48 +51,8 @@ function TransactionForm({ title, initialData, onSubmit }) {
         e.preventDefault();
 
         try {
-            if (formData.isRecurring) {
-
-                const {
-                    category_id,
-                    repeat_interval,
-                    description,
-                    amount,
-                    transaction_type,
-                    start_date,
-                    end_date
-                } = formData;
-
-                const data = await postRecurringTransaction({
-                    category_id,
-                    repeat_interval,
-                    description,
-                    amount,
-                    transaction_type,
-                    start_date,
-                    end_date
-
-                });
-                navigate("/transactions");
-            }
-            else {
-                const {
-                    category_id,
-                    recurring_transaction_id,
-                    description,
-                    amount,
-                    transaction_type
-                } = formData;
-
-                const data = await postTransaction({
-                    category_id,
-                    recurring_transaction_id: null,
-                    description,
-                    amount,
-                    transaction_type
-                });
-                navigate("/transactions");
-            }
+            await onSubmit(formData);
+            navigate("/transactions");
         }
         catch (error) {
             console.error(error);
@@ -115,9 +70,9 @@ function TransactionForm({ title, initialData, onSubmit }) {
         }
     };
 
-    async function handleAddCategory(){
+    async function handleAddCategory() {
 
-        if(!newCategory.trim()){
+        if (!newCategory.trim()) {
             return;
         }
         try {
@@ -132,9 +87,9 @@ function TransactionForm({ title, initialData, onSubmit }) {
             setFormData({
                 ...formData,
                 category_id: category.id
-        });
-        setNewCategory("");
-        setShowCategoryInput(false);
+            });
+            setNewCategory("");
+            setShowCategoryInput(false);
 
         }
         catch (error) {
@@ -145,6 +100,16 @@ function TransactionForm({ title, initialData, onSubmit }) {
     useEffect(() => {
         loadCategories();
     }, []);
+
+    useEffect(() => {
+        if (initialData) {
+            setFormData(prev => ({
+                ...prev,
+                ...initialData,
+                transaction_date: initialData.transaction_date?.split("T")[0]
+            }));
+        }
+    }, [initialData]);
 
 
     return (
@@ -184,22 +149,22 @@ function TransactionForm({ title, initialData, onSubmit }) {
                     ))}
                 </select>
 
-                <button type="button" onClick={()=>{ setShowCategoryInput(true)}}>Add Category</button>   
+                <button type="button" onClick={() => { setShowCategoryInput(true) }}>Add Category</button>
                 {
                     showCategoryInput && (
                         <>
                             <label htmlFor="category_name">Category Name</label>
                             <input type="text"
-                                   id= "category_name"
-                                   name="category_name"
-                                   value={newCategory}
-                                   onChange={ (e)=>{ setNewCategory(e.target.value)}}
-                                   />
+                                id="category_name"
+                                name="category_name"
+                                value={newCategory}
+                                onChange={(e) => { setNewCategory(e.target.value) }}
+                            />
                             <button type="button" onClick={handleAddCategory}>Save</button>
-                            <button type="button" onClick={ ()=>{ 
+                            <button type="button" onClick={() => {
                                 setShowCategoryInput(false);
                                 setNewCategory("");
-                             }} >Cancel</button>
+                            }} >Cancel</button>
                         </>
                     )
                 }
@@ -283,7 +248,7 @@ function TransactionForm({ title, initialData, onSubmit }) {
                 <button type="button" onClick={handleCancel}>
                     Cancel
                 </button>
-                <button type="submit">Add</button>
+                <button type="submit">{initialData ? "Save Changes" : "Add"}</button>
             </form>
         </>
     );

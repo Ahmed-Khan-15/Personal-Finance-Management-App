@@ -14,7 +14,7 @@ export async function getTransactions(filter) {
 
 export async function getTransactionById( id ) {
 
-    const response = await api.get(`/edit-transaction/${id}`);
+    const response = await api.get(`/transactions/${id}`);
 
     return response.data
 
@@ -40,6 +40,21 @@ export async function postTransaction({
     });
 
     return response.data
+
+};
+
+export async function updateTransaction(id,data) {
+    
+    const response = await api.put(`/transactions/${id}`,{
+        category_id: data.category_id,
+        description: data.description,
+        amount: data.amount,
+        transaction_type: data.transaction_type,
+        transaction_date: data.transaction_date,
+        recurring_transaction_id: data.recurring_transaction_id
+    });
+
+    return response.data;
 
 };
 

@@ -1,7 +1,59 @@
 import TransactionForm from "../components/TransactionForm";
+import { postTransaction } from "../services/transactionServices";
+import { postRecurringTransaction } from "../services/recurringTransactionsServices";
+
 
 function AddTransaction() {
-    return <TransactionForm title="Add Transaction"/>;
+    
+    async function handleAdd(data) {
+
+        if (data.isRecurring) {
+
+                const {
+                    category_id,
+                    repeat_interval,
+                    description,
+                    amount,
+                    transaction_type,
+                    start_date,
+                    end_date
+                } = data;
+                console.log(data);
+                const responseData = await postRecurringTransaction({
+                    category_id,
+                    repeat_interval,
+                    description,
+                    amount,
+                    transaction_type,
+                    start_date,
+                    end_date
+
+                });
+                
+            }
+            else {
+                const {
+                    category_id,
+                    recurring_transaction_id,
+                    description,
+                    amount,
+                    transaction_type,
+                    transaction_date
+                } = data;
+                console.log(data);
+                const responseData = await postTransaction({
+                    category_id,
+                    recurring_transaction_id: null,
+                    description,
+                    amount,
+                    transaction_type,
+                    transaction_date
+                });
+                
+            }
+    }
+
+    return <TransactionForm title="Add Transaction" onSubmit={handleAdd}/>;
 }
 
 export default AddTransaction;

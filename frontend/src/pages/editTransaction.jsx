@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import TransactionForm from "../components/TransactionForm";
-import { getTransactionById } from "../services/transactionServices";
+import { getTransactionById, updateTransaction } from "../services/transactionServices";
 
 function EditTransaction() {
     const { id } = useParams();
@@ -22,7 +22,15 @@ function EditTransaction() {
             loadTransaction();
         }, []);
 
-    return <TransactionForm title="Edit Transaction" initialData= {transaction}/>;
+        if(!transaction){
+            return <h1>Loading...</h1>
+        }
+
+        async function handleEdit(data) {
+            await updateTransaction(id,data)
+        }
+
+    return <TransactionForm title="Edit Transaction" initialData= {transaction} onSubmit={handleEdit}/>;
 }
 
 export default EditTransaction;

@@ -195,6 +195,7 @@ const updateRecurringTransaction = async (req, res) => {
                 message: "Recurring transaction not found"
             });
         }
+        await generateRecurringTransaction(result.rows[0]);
         res.status(200).json(result.rows[0]);
 
     }
