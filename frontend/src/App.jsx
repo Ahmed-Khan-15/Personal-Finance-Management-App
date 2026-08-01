@@ -7,6 +7,8 @@ import Dashboard from "./pages/dashboard.jsx";
 import Portfolio from "./pages/portfolio.jsx";
 import Transactions from "./pages/transactions.jsx";
 import RecurringTransactions from "./pages/recurringTransactions.jsx";
+import AddTransaction from "./pages/addTransaction.jsx";
+import EditTransaction from "./pages/editTransaction.jsx";
 
 
 function App() {
@@ -61,6 +63,22 @@ function App() {
           element={
             <ProtectedRoute>
               <RecurringTransactions />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/add-transaction"
+          element={
+            <ProtectedRoute>
+              <AddTransaction />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit-transaction/:id"
+          element={
+            <ProtectedRoute>
+              <EditTransaction />
             </ProtectedRoute>
           }
         />

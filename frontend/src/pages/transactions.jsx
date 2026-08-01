@@ -80,7 +80,9 @@ function Transactions() {
                             onChange={() => handleCheckbox(transaction.id)}
                         />
                     ) : (
-                        <button>Edit</button>
+                        
+            <button onClick={() => navigate(`/edit-transaction/${transaction.id}`)}>
+                Edit Transaction</button>
                     )}
                 </div>
             );
@@ -104,7 +106,7 @@ function Transactions() {
                 Recurring Transactions
             </button>
 
-            <button>Add Transaction</button>
+            <button onClick={() => navigate("/add-transaction")}>Add Transaction</button>
 
             {deleteMode ? (
                 <>

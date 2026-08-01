@@ -12,6 +12,14 @@ export async function getTransactions(filter) {
 
 };
 
+export async function getTransactionById( id ) {
+
+    const response = await api.get(`/edit-transaction/${id}`);
+
+    return response.data
+
+};
+
 export async function postTransaction({
     category_id,
     recurring_transaction_id,
@@ -27,7 +35,8 @@ export async function postTransaction({
         recurring_transaction_id,
         description,
         amount,
-        transaction_type
+        transaction_type,
+        transaction_date
     });
 
     return response.data

@@ -3,11 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { getCategories } from "../services/categoryServices";
 import { postTransaction } from "../services/transactionServices";
 import { postRecurringTransaction } from "../services/recurringTransactionsServices";
+import { postCategory } from "../services/categoryServices";
 
 
-function TransactionForm() {
+function TransactionForm({ title, initialData, onSubmit }) {
     const navigate = useNavigate();
     const [categories, setCategories] = useState([]);
+    const [showCategoryInput, setShowCategoryInput] = useState(false);
+    const [newCategory, setNewCategory] = useState(""); 
     const [formData, setFormData] = useState({
         category_id: "",
         description: "",
@@ -112,6 +115,33 @@ function TransactionForm() {
         }
     };
 
+    async function handleAddCategory(){
+
+        if(!newCategory.trim()){
+            return;
+        }
+        try {
+            const category = await postCategory({
+                name: newCategory
+            });
+
+            setCategories([
+                ...categories,
+                category
+            ]);
+            setFormData({
+                ...formData,
+                category_id: category.id
+        });
+        setNewCategory("");
+        setShowCategoryInput(false);
+
+        }
+        catch (error) {
+            console.error(error);
+        }
+    };
+
     useEffect(() => {
         loadCategories();
     }, []);
@@ -119,7 +149,7 @@ function TransactionForm() {
 
     return (
         <>
-            <h1>Add A Transaction</h1>
+            <h1>{title}</h1>
             <form onSubmit={handleSubmit}>
                 <label htmlFor="description">Description</label>
                 <input
@@ -154,6 +184,25 @@ function TransactionForm() {
                     ))}
                 </select>
 
+                <button type="button" onClick={()=>{ setShowCategoryInput(true)}}>Add Category</button>   
+                {
+                    showCategoryInput && (
+                        <>
+                            <label htmlFor="category_name">Category Name</label>
+                            <input type="text"
+                                   id= "category_name"
+                                   name="category_name"
+                                   value={newCategory}
+                                   onChange={ (e)=>{ setNewCategory(e.target.value)}}
+                                   />
+                            <button type="button" onClick={handleAddCategory}>Save</button>
+                            <button type="button" onClick={ ()=>{ 
+                                setShowCategoryInput(false);
+                                setNewCategory("");
+                             }} >Cancel</button>
+                        </>
+                    )
+                }
                 <button
                     type="button"
                     onClick={() =>

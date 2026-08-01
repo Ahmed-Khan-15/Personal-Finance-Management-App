@@ -57,13 +57,26 @@ const createCategory = async (req, res) => {
 
         const user_id = req.user.id;
         const { name } = req.body;
+        const trimmedName = name.trim();
 
-        if (!name) {
+        if (!trimmedName) {
             return res.status(400).json({
                 message: "Missing required fields"
             });
         }
 
+        const query1 = `SELECT *
+                        FROM categories
+                        WHERE
+                        (user_id IS NULL OR user_id = $1)
+                        AND LOWER(name) = LOWER($2);`;
+            
+        const check = await pool.query(query1, [user_id,trimmedName]);
+        if( check.rowCount !== 0 ){
+            return res.status(409).json({
+                message: "Category already exists"
+            });
+        }
         const query = `
         INSERT INTO categories (
             user_id,
@@ -92,9 +105,9 @@ const updateCategory = async (req, res) => {
 
     try {
         const user_id = req.user.id;
-
+        
         const { id } = req.params;
-
+        
         const categoryID = Number(id);
 
         if (Number.isNaN(categoryID)) {
@@ -102,15 +115,29 @@ const updateCategory = async (req, res) => {
                 message: "Invalid category ID"
             });
         }
-
+        
         const { name } = req.body;
+        const trimmedName = name.trim();
 
-        if (!name) {
+        if (!trimmedName) {
             return res.status(400).json({
                 message: "Missing required fields"
             });
         }
-
+        
+        const query1 = `SELECT *
+                        FROM categories
+                        WHERE
+                        (user_id IS NULL OR user_id = $1)
+                        AND LOWER(name) = LOWER($2)
+                        AND id != $3;`;
+            
+        const check = await pool.query(query1, [user_id,trimmedName,categoryID]);
+        if( check.rowCount !== 0 ){
+            return res.status(409).json({
+                message: "Category already exists"
+            });
+        }
         const query = `
         UPDATE categories
         SET
@@ -124,7 +151,7 @@ const updateCategory = async (req, res) => {
             user_id,
             categoryID
         ];
-
+        
         const result = await pool.query(query, values);
 
         if (result.rowCount === 0) {

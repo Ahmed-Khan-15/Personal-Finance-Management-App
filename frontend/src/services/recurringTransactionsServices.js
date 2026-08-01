@@ -1,6 +1,6 @@
 import api from "../api/axios";
 
-export async function getRecurringTransactions(filter) {
+export async function getRecurringTransactions() {
 
     const response = await api.get("/recurring_transactions");
 
