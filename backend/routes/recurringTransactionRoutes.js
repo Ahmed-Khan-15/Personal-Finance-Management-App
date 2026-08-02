@@ -19,6 +19,6 @@ router.get("/:id", authMiddleware, getRecurringTransactionById);
 router.post("/", authMiddleware, validateRecurringTransaction, createRecurringTransaction);
 router.put("/:id", authMiddleware, validateRecurringTransaction, updateRecurringTransaction);
 
-router.delete("/:id", authMiddleware, deleteRecurringTransaction);
+router.delete("/", authMiddleware, deleteRecurringTransaction);
 
 module.exports = router;

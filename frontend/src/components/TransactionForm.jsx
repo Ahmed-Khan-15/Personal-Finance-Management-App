@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getCategories, postCategory } from "../services/categoryServices";
 
 
-function TransactionForm({ title, initialData, onSubmit }) {
+function TransactionForm({ title, initialData, onSubmit, redirect = "/transactions" }) {
     const navigate = useNavigate();
     const [categories, setCategories] = useState([]);
     const [showCategoryInput, setShowCategoryInput] = useState(false);
@@ -34,7 +34,7 @@ function TransactionForm({ title, initialData, onSubmit }) {
             start_date: "",
             end_date: "",
         });
-        navigate("/transactions");
+        navigate(redirect);
     }
 
     function handleChange(e) {
@@ -52,7 +52,7 @@ function TransactionForm({ title, initialData, onSubmit }) {
 
         try {
             await onSubmit(formData);
-            navigate("/transactions");
+            navigate(redirect);
         }
         catch (error) {
             console.error(error);
@@ -80,14 +80,14 @@ function TransactionForm({ title, initialData, onSubmit }) {
                 name: newCategory
             });
 
-            setCategories([
-                ...categories,
+            setCategories(prev => [
+                ...prev,
                 category
             ]);
-            setFormData({
-                ...formData,
+            setFormData(prev => ({
+                ...prev,
                 category_id: category.id
-            });
+            }));
             setNewCategory("");
             setShowCategoryInput(false);
 
@@ -106,7 +106,9 @@ function TransactionForm({ title, initialData, onSubmit }) {
             setFormData(prev => ({
                 ...prev,
                 ...initialData,
-                transaction_date: initialData.transaction_date?.split("T")[0]
+                isRecurring: !!initialData.repeat_interval,
+                start_date: initialData.start_date?.split("T")[0],
+                end_date: initialData.end_date?.split("T")[0],
             }));
         }
     }, [initialData]);
@@ -197,6 +199,7 @@ function TransactionForm({ title, initialData, onSubmit }) {
                     type="checkbox"
                     onChange={handleChange}
                     checked={formData.isRecurring}
+                    disabled={initialData?.repeat_interval}
                 />
 
                 {formData.isRecurring ? (

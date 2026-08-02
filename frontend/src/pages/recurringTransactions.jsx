@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-    getRecurringTransactions,
-    deleteRecurringTransactions,
-} from "../services/recurringTransactionsServices";
+import { getRecurringTransactions, deleteRecurringTransactions } from "../services/recurringTransactionsServices";
+import { logout } from "../services/authServices";
 
 function RecurringTransactions() {
     const navigate = useNavigate();
@@ -72,7 +70,11 @@ function RecurringTransactions() {
                 <p>
                     Start Date: {new Date(transaction.start_date).toLocaleDateString()}
                 </p>
-                <p>End Date: {new Date(transaction.end_date).toLocaleDateString()}</p>
+                <p>End Date: {
+                    transaction.end_date
+                        ? new Date(transaction.end_date).toLocaleDateString()
+                        : "Never"
+                }</p>
 
                 <p>{transaction.repeat_interval}</p>
 
@@ -83,7 +85,7 @@ function RecurringTransactions() {
                         onChange={() => handleCheckbox(transaction.id)}
                     />
                 ) : (
-                    <button>Edit</button>
+                    <button onClick={() => { navigate(`/edit-recurring-transaction/${transaction.id}`) }}>Edit</button>
                 )}
             </div>
         );
@@ -96,7 +98,7 @@ function RecurringTransactions() {
 
             <button onClick={() => navigate("/transactions")}>Transactions</button>
 
-            <button>Add Recurring Transaction</button>
+            <button onClick={() => { navigate("/add-transaction") }}>Add Recurring Transaction</button>
 
             {deleteMode ? (
                 <>

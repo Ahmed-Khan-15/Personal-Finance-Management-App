@@ -9,6 +9,7 @@ import Transactions from "./pages/transactions.jsx";
 import RecurringTransactions from "./pages/recurringTransactions.jsx";
 import AddTransaction from "./pages/addTransaction.jsx";
 import EditTransaction from "./pages/editTransaction.jsx";
+import EditRecurringTransaction from "./pages/editRecurringTransaction.jsx";
 
 
 function App() {
@@ -79,6 +80,14 @@ function App() {
           element={
             <ProtectedRoute>
               <EditTransaction />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit-recurring-transaction/:id"
+          element={
+            <ProtectedRoute>
+              <EditRecurringTransaction />
             </ProtectedRoute>
           }
         />
