@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../services/authServices";
 import {
     getTransactions,
     deleteTransactions,
@@ -31,11 +30,7 @@ function Transactions() {
     }, [filter]);
 
     // Event Handlers
-    function handleLogout() {
-        logout();
-        navigate("/login");
-    }
-
+   
     function handleCheckbox(id) {
         if (selectedTransactions.includes(id)) {
             let arr = selectedTransactions;
@@ -149,11 +144,9 @@ function Transactions() {
             <button onClick={() => setFilter("6_months")}>6 Months</button>
             <button onClick={() => setFilter("1_year")}>1 year</button>
             <button onClick={() => setFilter("all_time")}>All Time</button>
-            <button>Custom Range</button>
 
             {monthList}
 
-            <button onClick={handleLogout}>Logout</button>
         </>
     );
 }

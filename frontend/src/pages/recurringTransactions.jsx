@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getRecurringTransactions, deleteRecurringTransactions } from "../services/recurringTransactionsServices";
-import { logout } from "../services/authServices";
 
 function RecurringTransactions() {
     const navigate = useNavigate();
@@ -27,10 +26,6 @@ function RecurringTransactions() {
     }, []);
 
     // Event Handlers
-    function handleLogout() {
-        logout();
-        navigate("/login");
-    }
 
     function handleCheckbox(id) {
         if (selectedTransactions.includes(id)) {
@@ -136,7 +131,6 @@ function RecurringTransactions() {
 
             <div>{transactionList}</div>
 
-            <button onClick={handleLogout}>Logout</button>
         </>
     );
 }

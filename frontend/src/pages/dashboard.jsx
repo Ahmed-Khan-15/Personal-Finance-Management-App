@@ -9,11 +9,6 @@ function Dashboard() {
 
     const [dashboard, setDashboard] = useState(null);
 
-    function handleLogout() {
-        logout();
-        navigate("/login");
-    }
-
     useEffect(() => {
 
         async function loadDashboard() {
@@ -77,10 +72,7 @@ function Dashboard() {
             <h2>Monthly Transactions</h2>
 
             {categoryList}
-
-            <button onClick={handleLogout}>
-                Logout
-            </button>
+        
         </>
     );
 }

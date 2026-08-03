@@ -1,17 +1,24 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { signup } from "../services/authServices";
 
 function Signup() {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
+    console.log("Submit clicked");
     event.preventDefault();
-
-    console.log(username);
-    console.log(email);
-    console.log(password);
+    try{
+          const data = await signup({ username, email, password });
+          console.log(data.message)
+          navigate("/login");
+    }
+    catch(error){
+          console.error(error);
+    }
   }
 
   return (

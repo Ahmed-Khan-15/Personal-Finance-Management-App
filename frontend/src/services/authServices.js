@@ -14,6 +14,22 @@ export async function login({
 
 };
 
+export async function signup({
+    username,
+    email,
+    password
+}){
+
+    const response = await api.post("/auth/signup", {
+        username,
+        email,
+        password
+    });
+
+    return response.data
+
+};
+
 export function logout (){
     localStorage.removeItem("token");
 };
