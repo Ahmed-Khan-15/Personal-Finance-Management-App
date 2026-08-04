@@ -5,6 +5,10 @@ const getDashboard = async (req, res) => {
     try {
 
         const user_id = req.user.id;
+
+        const usernameQuery = `SELECT username
+                               FROM users
+                               WHERE id = $1;`;
         const incomeQuery = `SELECT COALESCE(SUM(amount), 0) AS monthly_income
                              FROM transactions WHERE user_id = $1 
                              AND transaction_type = 'income' 
@@ -37,6 +41,7 @@ const getDashboard = async (req, res) => {
 
 
         const categoryTransactions = await pool.query(categoryTransactionsQuery, [user_id]);
+        const username = await pool.query(usernameQuery, [user_id]);
         const income = await pool.query(incomeQuery, [user_id]);
         const expense = await pool.query(expenseQuery, [user_id]);
 
@@ -75,6 +80,7 @@ const getDashboard = async (req, res) => {
         const categories = Object.values(groupedCategories);
 
         res.json({
+            username: username.rows[0].username,
             income: incomeAmount,
             expense: expenseAmount,
             savings,
