@@ -9,10 +9,8 @@ const categoriesRoutes = require("./routes/categoryRoutes");
 const transactionRoutes = require("./routes/transactionRoutes");
 const recurringTransactionRoutes = require("./routes/recurringTransactionRoutes");
 const app = express();
-app.use(cors({
-    origin: "http://localhost:5173"
-}));
-const PORT = 3000;
+app.use(cors());
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use("/auth", authRoutes);
