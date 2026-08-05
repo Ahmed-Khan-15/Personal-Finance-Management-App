@@ -15,12 +15,12 @@ export default function Landing() {
       
 
       {/* ---------------- HERO SECTION ---------------- */}
-<main className="container mx-auto px-6 py-12 lg:py-20 flex-1 grid gap-16 lg:grid-cols-12 items-center relative z-10">
+<main className="container mx-auto grid flex-1 items-center gap-10 px-4 py-10 sm:px-6 sm:py-12 lg:grid-cols-12 lg:gap-16 lg:py-20 relative z-10">
 
   {/* LEFT COLUMN */}
   <div className="lg:col-span-7 flex flex-col items-start">
 
-    <div className="w-full mb-6">
+    <div className="mb-5 w-full sm:mb-6">
   <StrokeText
     text="Track. Analyze. Grow."
     strokeColor="#5bb8d3"
@@ -35,14 +35,14 @@ export default function Landing() {
   />
 </div>
 
-    <p className="text-slate-300 mb-6 max-w-xl text-lg sm:text-xl leading-relaxed">
+    <p className="mb-6 max-w-xl text-base leading-relaxed text-slate-300 sm:text-xl">
       Keep every rupee under control with a modern personal finance manager.
       Track income and expenses, organize transactions into categories,
       automate recurring payments, and understand your spending through
       beautiful dashboards and portfolio insights.
     </p>
 
-    <div className="flex flex-wrap gap-3 mb-10">
+    <div className="mb-8 flex flex-wrap gap-2 sm:mb-10 sm:gap-3">
 
       <span className="rounded-full bg-[#2d748a]/70 px-4 py-2 text-sm text-slate-100">
         ✓ Dashboard Overview
@@ -62,21 +62,22 @@ export default function Landing() {
 
     </div>
 
-    <div className="flex flex-wrap items-center gap-4 mb-12">
+    <div className="mb-4 flex flex-col items-stretch gap-3 sm:mb-12 sm:flex-row sm:items-center sm:gap-4">
 
-      <Link to="/signup">
+      <Link to="/signup" className="sm:inline-flex">
         <SpecularButton
           baseColor="#318097"
           textColor="#ffffff"
           size="lg"
           followMouse
+          className="w-full sm:w-auto"
         >
           Get Started
         </SpecularButton>
       </Link>
 
-      <Link to="/login">
-        <button className="px-6 py-3.5 rounded-xl border border-[#4B7B89] bg-[#2d748a]/50 hover:bg-[#2d748a] text-slate-100 font-medium transition-all duration-200 backdrop-blur-md shadow-sm">
+      <Link to="/login" className="sm:inline-flex">
+        <button className="w-full rounded-xl border border-[#4B7B89] bg-[#2d748a]/50 px-6 py-3.5 font-medium text-slate-100 shadow-sm backdrop-blur-md transition-all duration-200 hover:bg-[#2d748a] sm:w-auto">
           Sign In
         </button>
       </Link>
@@ -226,7 +227,7 @@ export default function Landing() {
 </main>
 
       {/* ---------------- FEATURE CARDS GRID ---------------- */}
-      <section id="features" className="container mx-auto px-6 py-12 relative z-10 border-t border-[#3D7180]/60">
+      <section id="features" className="container relative z-10 mx-auto border-t border-[#3D7180]/60 px-4 py-10 sm:px-6 sm:py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           
           <div className="p-5 rounded-2xl border border-[#4B7B89] bg-[#2d748a]/60 backdrop-blur-sm hover:border-cyan-400/50 transition-all group">

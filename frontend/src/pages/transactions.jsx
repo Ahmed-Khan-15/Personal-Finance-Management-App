@@ -99,15 +99,15 @@ function Transactions() {
         <div className="transactions-page mx-auto max-w-6xl space-y-7">
             <div><h1 className="page-title text-2xl font-bold tracking-tight sm:text-3xl">Transactions</h1></div>
 
-            <div className="flex flex-wrap gap-3"><button className="txn-page-btn-secondary rounded-xl border px-4 py-2.5 text-sm font-medium shadow-sm transition" onClick={() => navigate("/recurring-transactions")}>
+            <div className="grid gap-3 sm:flex sm:flex-wrap"><button className="txn-page-btn-secondary w-full rounded-xl border px-4 py-2.5 text-sm font-medium shadow-sm transition sm:w-auto" onClick={() => navigate("/recurring-transactions")}>
                 Recurring Transactions
             </button>
 
-            <button className="txn-page-btn-add rounded-xl px-4 py-2.5 text-sm font-medium shadow-sm transition" onClick={() => navigate("/add-transaction")}>+ Add Transaction</button>
+            <button className="txn-page-btn-add w-full rounded-xl px-4 py-2.5 text-sm font-medium shadow-sm transition sm:w-auto" onClick={() => navigate("/add-transaction")}>+ Add Transaction</button>
 
             {deleteMode ? (
                 <>
-                    <button className="txn-page-btn-delete-active rounded-xl px-4 py-2.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50"
+                    <button className="txn-page-btn-delete-active w-full rounded-xl px-4 py-2.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
                         disabled={selectedTransactions.length === 0}
                         onClick={async () => {
                             await deleteTransactions(selectedTransactions);
@@ -119,7 +119,7 @@ function Transactions() {
                         Delete Selected
                     </button>
 
-                    <button className="txn-page-btn-secondary rounded-xl border px-4 py-2.5 text-sm font-medium transition"
+                    <button className="txn-page-btn-secondary w-full rounded-xl border px-4 py-2.5 text-sm font-medium transition sm:w-auto"
                         onClick={() => {
                             setDeleteMode(false);
                             setSelectedTransactions([]);
@@ -129,7 +129,7 @@ function Transactions() {
                     </button>
                 </>
             ) : (
-                <button className="txn-page-btn-delete rounded-xl border px-4 py-2.5 text-sm font-medium transition"
+                <button className="txn-page-btn-delete w-full rounded-xl border px-4 py-2.5 text-sm font-medium transition sm:w-auto"
                     onClick={() => {
                         setDeleteMode(true);
                         setSelectedTransactions([]);

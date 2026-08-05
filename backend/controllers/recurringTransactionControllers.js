@@ -210,7 +210,7 @@ const updateRecurringTransaction = async (req, res) => {
 const deleteRecurringTransaction = async (req, res) => {
 
     try {
-
+        
         const user_id = req.user.id;
 
         const { recurringTransactionIds } = req.body;
@@ -231,6 +231,15 @@ const deleteRecurringTransaction = async (req, res) => {
                 message: "Invalid transaction ID"
             });
         }
+
+        await pool.query(
+        `
+        UPDATE transactions
+        SET recurring_transaction_id = NULL
+        WHERE recurring_transaction_id = ANY($1)
+        `,
+        [recurringTransactionIds]
+        );
 
         const query = `
         DELETE FROM recurring_transactions
