@@ -35,11 +35,10 @@ const generateRecurringTransaction = async (recurringTransaction) => {
                 description,
                 amount,
                 transaction_type,
-                transaction_date,
-                recurrence_date
+                transaction_date
             )
-            VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
-            ON CONFLICT (recurring_transaction_id, recurrence_date)
+            VALUES ($1,$2,$3,$4,$5,$6,$7)
+            ON CONFLICT (recurring_transaction_id, transaction_date)
             DO NOTHING
             RETURNING *`,
             [
@@ -49,7 +48,6 @@ const generateRecurringTransaction = async (recurringTransaction) => {
                 description,
                 amount,
                 transaction_type,
-                currentDate,
                 currentDate
             ]
         );
