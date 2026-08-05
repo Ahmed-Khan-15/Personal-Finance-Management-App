@@ -98,11 +98,13 @@ function TransactionForm({ title, initialData, onSubmit, redirect = "/transactio
     };
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         loadCategories();
     }, []);
 
     useEffect(() => {
         if (initialData) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setFormData(prev => ({
                 ...prev,
                 ...initialData,
@@ -115,13 +117,13 @@ function TransactionForm({ title, initialData, onSubmit, redirect = "/transactio
 
 
     return (
-        <div className="mx-auto max-w-2xl">
+        <div className="transaction-form-page mx-auto max-w-2xl">
             <div className="mb-6">
-                <h1 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">{title}</h1>
+                <h1 className="page-title text-2xl font-bold tracking-tight sm:text-3xl">{title}</h1>
             </div>
-            <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
+            <form onSubmit={handleSubmit} className="transaction-form space-y-5 rounded-2xl border p-5 shadow-sm sm:p-8">
                 <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700" htmlFor="description">Description</label>
+                <label className="form-label text-sm font-medium" htmlFor="description">Description</label>
                 <input
                     required
                     id="description"
@@ -129,11 +131,13 @@ function TransactionForm({ title, initialData, onSubmit, redirect = "/transactio
                     type="text"
                     value={formData.description}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-800 outline-none transition focus:border-[#318097] focus:ring-2 focus:ring-[#318097]/20"
+                    placeholder="e.g. Grocery shopping"
+                    className="form-input w-full rounded-xl border px-3 py-2.5 outline-none transition focus:border-[#318097] focus:ring-2 focus:ring-[#318097]/20"
                 />
                 </div>
 
-                <div className="space-y-2"><label className="text-sm font-medium text-slate-700" htmlFor="amount">Amount</label>
+                <div className="space-y-2">
+                <label className="form-label text-sm font-medium" htmlFor="amount">Amount</label>
                 <input
                     required
                     id="amount"
@@ -141,16 +145,18 @@ function TransactionForm({ title, initialData, onSubmit, redirect = "/transactio
                     type="number"
                     value={formData.amount}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-800 outline-none transition focus:border-[#318097] focus:ring-2 focus:ring-[#318097]/20"
+                    placeholder="0.00"
+                    className="form-input w-full rounded-xl border px-3 py-2.5 outline-none transition focus:border-[#318097] focus:ring-2 focus:ring-[#318097]/20"
                 />
                 </div>
 
                 <div className="space-y-2">
+                <label className="form-label text-sm font-medium">Category</label>
                 <select
                     name="category_id"
                     value={formData.category_id}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-slate-700 outline-none transition focus:border-[#318097] focus:ring-2 focus:ring-[#318097]/20"
+                    className="form-input w-full rounded-xl border px-3 py-2.5 outline-none transition focus:border-[#318097] focus:ring-2 focus:ring-[#318097]/20"
                 >
                     <option value="">Select Category</option>
                     {categories.map((category) => (
@@ -160,36 +166,40 @@ function TransactionForm({ title, initialData, onSubmit, redirect = "/transactio
                     ))}
                 </select>
 
-                <button className="text-sm font-medium text-[#318097] transition hover:text-[#225969]" type="button" onClick={() => { setShowCategoryInput(true) }}>+ Add Category</button>
+                <button className="add-category-link text-sm font-medium transition" type="button" onClick={() => { setShowCategoryInput(true) }}>+ Add Category</button>
                 </div>
                 {
                     showCategoryInput && (
-                        <div className="space-y-3 rounded-xl bg-slate-50 p-4">
-                            <label className="text-sm font-medium text-slate-700" htmlFor="category_name">Category Name</label>
+                        <div className="transaction-category-panel space-y-3 rounded-xl p-4">
+                            <label className="form-label text-sm font-medium" htmlFor="category_name">Category Name</label>
                             <input type="text"
                                 id="category_name"
                                 name="category_name"
                                 value={newCategory}
                                 onChange={(e) => { setNewCategory(e.target.value) }}
-                                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-slate-800 outline-none transition focus:border-[#318097] focus:ring-2 focus:ring-[#318097]/20"
+                                placeholder="e.g. Groceries"
+                                className="form-input w-full rounded-xl border px-3 py-2.5 outline-none transition focus:border-[#318097] focus:ring-2 focus:ring-[#318097]/20"
                             />
-                            <div className="flex gap-3"><button className="rounded-xl bg-[#318097] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#225969]" type="button" onClick={handleAddCategory}>Save</button>
-                            <button className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-white" type="button" onClick={() => {
+                            <div className="flex gap-3">
+                            <button className="rounded-xl bg-[#318097] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#225969]" type="button" onClick={handleAddCategory}>Save</button>
+                            <button className="form-cancel-btn rounded-xl border px-4 py-2 text-sm font-medium transition" type="button" onClick={() => {
                                 setShowCategoryInput(false);
                                 setNewCategory("");
-                            }} >Cancel</button></div>
+                            }} >Cancel</button>
+                            </div>
                         </div>
                     )
                 }
-                <div className="grid grid-cols-2 gap-3"><button
+                <div className="grid grid-cols-2 gap-3">
+                <button
                     type="button"
                     onClick={() =>
                         setFormData({
                             ...formData,
                             transaction_type: "income"
                         })}
-                    className={`rounded-xl border px-4 py-2.5 font-medium transition ${formData.transaction_type === "income" ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-slate-200 text-slate-600 hover:bg-slate-50"}`}>
-                    {formData.transaction_type === "income" ? "✓" : " "}Income
+                    className={`transaction-type-button rounded-xl border px-4 py-2.5 font-medium transition ${formData.transaction_type === "income" ? "type-income-active" : "type-inactive"}`}>
+                    {formData.transaction_type === "income" ? "✓ " : ""}Income
                 </button>
 
                 <button
@@ -199,12 +209,13 @@ function TransactionForm({ title, initialData, onSubmit, redirect = "/transactio
                             ...formData,
                             transaction_type: "expense"
                         })}
-                    className={`rounded-xl border px-4 py-2.5 font-medium transition ${formData.transaction_type === "expense" ? "border-red-200 bg-red-50 text-red-700" : "border-slate-200 text-slate-600 hover:bg-slate-50"}`}>
-                    {formData.transaction_type === "expense" ? "✓" : " "}Expense
-                </button></div>
+                    className={`transaction-type-button rounded-xl border px-4 py-2.5 font-medium transition ${formData.transaction_type === "expense" ? "type-expense-active" : "type-inactive"}`}>
+                    {formData.transaction_type === "expense" ? "✓ " : ""}Expense
+                </button>
+                </div>
 
-                <label className="flex items-center gap-3 rounded-xl bg-slate-50 p-3 text-sm font-medium text-slate-700" htmlFor="isRecurring">Recurring Transaction
-                <input className="h-4 w-4 rounded border-slate-300 text-[#318097] focus:ring-[#318097]"
+                <label className="transaction-recurring-toggle flex items-center gap-3 rounded-xl p-3 text-sm font-medium" htmlFor="isRecurring">Recurring Transaction
+                <input className="h-4 w-4 rounded text-[#318097] focus:ring-[#318097]"
                     id="isRecurring"
                     name="isRecurring"
                     type="checkbox"
@@ -214,12 +225,12 @@ function TransactionForm({ title, initialData, onSubmit, redirect = "/transactio
                 /></label>
 
                 {formData.isRecurring ? (
-                    <div className="space-y-5 border-l-2 border-[#318097]/20 pl-4">
+                    <div className="recurring-fields space-y-5 border-l-2 border-[#318097]/30 pl-4">
                         <select
                             name="repeat_interval"
                             value={formData.repeat_interval}
                             onChange={handleChange}
-                            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-slate-700 outline-none transition focus:border-[#318097] focus:ring-2 focus:ring-[#318097]/20"
+                            className="form-input w-full rounded-xl border px-3 py-2.5 outline-none transition focus:border-[#318097] focus:ring-2 focus:ring-[#318097]/20"
                         >
                             <option value="daily">Daily</option>
                             <option value="weekly">Weekly</option>
@@ -227,7 +238,8 @@ function TransactionForm({ title, initialData, onSubmit, redirect = "/transactio
                             <option value="yearly">Yearly</option>
                         </select>
 
-                        <div className="space-y-2"><label className="text-sm font-medium text-slate-700" htmlFor="start_date">Start Date</label>
+                        <div className="space-y-2">
+                        <label className="form-label text-sm font-medium" htmlFor="start_date">Start Date</label>
                         <input
                             required
                             id="start_date"
@@ -235,22 +247,25 @@ function TransactionForm({ title, initialData, onSubmit, redirect = "/transactio
                             type="date"
                             value={formData.start_date}
                             onChange={handleChange}
-                            className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-700 outline-none transition focus:border-[#318097] focus:ring-2 focus:ring-[#318097]/20"
+                            className="form-input w-full rounded-xl border px-3 py-2.5 outline-none transition focus:border-[#318097] focus:ring-2 focus:ring-[#318097]/20"
                         />
                         </div>
 
-                        <div className="space-y-2"><label className="text-sm font-medium text-slate-700" htmlFor="end_date">End Date</label>
+                        <div className="space-y-2">
+                        <label className="form-label text-sm font-medium" htmlFor="end_date">End Date</label>
                         <input
                             id="end_date"
                             name="end_date"
                             type="date"
                             value={formData.end_date}
                             onChange={handleChange}
-                            className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-700 outline-none transition focus:border-[#318097] focus:ring-2 focus:ring-[#318097]/20"
+                            className="form-input w-full rounded-xl border px-3 py-2.5 outline-none transition focus:border-[#318097] focus:ring-2 focus:ring-[#318097]/20"
                         />
-                        </div></div>
+                        </div>
+                    </div>
                 ) : (
-                    <div className="space-y-2"><label className="text-sm font-medium text-slate-700" htmlFor="transaction_date">Transaction Date</label>
+                    <div className="space-y-2">
+                    <label className="form-label text-sm font-medium" htmlFor="transaction_date">Transaction Date</label>
                         <input
                             required
                             id="transaction_date"
@@ -258,15 +273,17 @@ function TransactionForm({ title, initialData, onSubmit, redirect = "/transactio
                             type="date"
                             value={formData.transaction_date}
                             onChange={handleChange}
-                            className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-700 outline-none transition focus:border-[#318097] focus:ring-2 focus:ring-[#318097]/20"
+                            className="form-input w-full rounded-xl border px-3 py-2.5 outline-none transition focus:border-[#318097] focus:ring-2 focus:ring-[#318097]/20"
                         />
                     </div>
                 )}
 
-                <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end"><button className="rounded-xl border border-slate-200 px-5 py-2.5 font-medium text-slate-600 transition hover:bg-slate-50" type="button" onClick={handleCancel}>
+                <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
+                <button className="transaction-form-cancel rounded-xl border px-5 py-2.5 font-medium transition" type="button" onClick={handleCancel}>
                     Cancel
                 </button>
-                <button className="rounded-xl bg-[#318097] px-5 py-2.5 font-medium text-white shadow-sm transition hover:bg-[#225969]" type="submit">{initialData ? "Save Changes" : "Add"}</button></div>
+                <button className="rounded-xl bg-[#318097] px-5 py-2.5 font-medium text-white shadow-sm transition hover:bg-[#225969]" type="submit">{initialData ? "Save Changes" : "Add"}</button>
+                </div>
             </form>
         </div>
     );

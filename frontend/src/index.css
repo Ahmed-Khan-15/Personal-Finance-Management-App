@@ -1,1 +1,764 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/geist";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --animate-specular: specular 3s infinite linear;
+  --animate-shine: shine 3s linear infinite;
+
+  @keyframes specular {
+    0% { transform: translateX(-100%) rotate(45deg); }
+    100% { transform: translateX(200%) rotate(45deg); }
+  }
+
+  @keyframes shine {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+}
+
+/* The theme applies only to the page content. The sidebar intentionally keeps its teal palette. */
+.page-theme {
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+.theme-dark .page-theme {
+  background: #025165;
+}
+
+.theme-light .page-theme {
+  background: #f8fafc;
+}
+
+.theme-toggle {
+  border-color: #568392;
+  background: #2d748a;
+  color: #f8fafc;
+}
+
+.theme-toggle:hover {
+  background: #36859d;
+}
+
+.theme-light .theme-toggle {
+  border-color: #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+}
+
+.theme-light .theme-toggle:hover {
+  background: #f1f5f9;
+}
+
+/* Dashboard's existing teal cards become calm white surfaces in light mode. */
+.theme-light .dashboard-page :is(.text-slate-100, .text-slate-200, .text-\[\#FFFFFF\]) {
+  color: #025165 !important;
+}
+
+.theme-light .dashboard-page :is(.text-\[\#f8e7e7\]) {
+  color: #3d7180 !important;
+}
+
+.theme-light .dashboard-page :is(.bg-\[\#2d748a\], .bg-\[\#4ca5c775\]) {
+  background-color: #ffffff !important;
+}
+
+.theme-light .dashboard-page :is(.border-\[\#4B7B89\], .border-\[\#3D7180\], .border-\[\#568392\]) {
+  border-color: #e2e8f0 !important;
+}
+
+.theme-light .dashboard-page :is(.shadow-black\/15, .shadow-black\/10) {
+  --tw-shadow-color: rgb(15 23 42 / 0.08) !important;
+}
+
+/* Keep dashboard metric-card text legible as its surface changes theme. */
+.theme-light .dashboard-summary-card h2 {
+  color: #025165 !important;
+}
+
+.theme-light .dashboard-summary-card:nth-child(1) p { color: #15803d !important; }
+.theme-light .dashboard-summary-card:nth-child(2) p { color: #dc2626 !important; }
+.theme-light .dashboard-summary-card:nth-child(3) p { color: #318097 !important; }
+
+.theme-dark .dashboard-summary-card h2 { color: #f8fafc !important; }
+.theme-dark .dashboard-summary-card:nth-child(1) p { color: #86efac !important; }
+.theme-dark .dashboard-summary-card:nth-child(2) p { color: #fca5a5 !important; }
+.theme-dark .dashboard-summary-card:nth-child(3) p { color: #6ad4f3 !important; }
+
+/* Make the rest of the protected pages equally usable in dark mode. */
+.theme-dark .page-theme :is(.bg-white, .bg-slate-50) {
+  background-color: #2d748a !important;
+}
+
+.theme-dark .page-theme :is(.border-slate-100, .border-slate-200, .ring-slate-200) {
+  border-color: #568392 !important;
+}
+
+.theme-dark .page-theme .ring-slate-200 {
+  --tw-ring-color: #568392 !important;
+}
+
+.theme-dark .page-theme :is(.text-slate-800, .text-slate-700, .text-slate-600, .text-slate-500) {
+  color: #e2e8f0 !important;
+}
+
+.theme-dark .page-theme :is(input, select) {
+  background-color: #ffffff;
+  color: #1e293b;
+}
+
+.theme-dark .page-theme :is(.hover\:bg-slate-50:hover, .hover\:bg-white:hover) {
+  background-color: #36859d !important;
+}
+
+/* Portfolio follows the dashboard's card treatment in both themes. */
+.portfolio-page .portfolio-summary-card,
+.portfolio-page .portfolio-month-card {
+  transition: background-color 200ms ease, border-color 200ms ease;
+}
+
+.theme-dark .portfolio-page .portfolio-summary-card {
+  border-color: #5e92a3;
+  background-color: #94e7f15e;
+  color: #f8fafc;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.1);
+}
+
+.theme-dark .portfolio-page .portfolio-month-card {
+  border-color: #4b7b89;
+  background-color: #2d748a;
+  color: #f8fafc;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.15);
+}
+
+.theme-dark .portfolio-page .portfolio-summary-card h2,
+.theme-dark .portfolio-page .portfolio-month-card h3,
+.theme-dark .portfolio-page .portfolio-month-card .border-t {
+  color: #f8fafc;
+  border-color: #4b7b89;
+}
+
+.theme-dark .portfolio-page .portfolio-month-card button,
+.theme-dark .portfolio-page .portfolio-month-card .text-slate-700 {
+  color: #f8fafc !important;
+}
+
+.theme-dark .portfolio-page .portfolio-month-card :is(.border-emerald-100, .border-red-100) {
+  border-color: rgb(248 250 252 / 0.18);
+}
+
+.theme-dark .portfolio-page .portfolio-month-card :is(.text-emerald-700, .text-red-700) {
+  color: #f8fafc;
+}
+
+.theme-light .portfolio-page :is(.portfolio-summary-card, .portfolio-month-card) {
+  border-color: #e2e8f0;
+  background-color: #ffffff;
+  color: #025165;
+}
+
+.theme-light .portfolio-page .portfolio-summary-card {
+  background-color: #5f8e941a;
+}
+
+.theme-light .portfolio-page .portfolio-summary-card h2,
+.theme-light .portfolio-page .portfolio-month-card h3 {
+  color: #025165;
+}
+
+/* Portfolio metric-card values mirror dashboard colors in each theme. */
+.theme-light .portfolio-page .portfolio-summary-card:nth-child(1) p { color: #15803d !important; }
+.theme-light .portfolio-page .portfolio-summary-card:nth-child(2) p { color: #dc2626 !important; }
+.theme-light .portfolio-page .portfolio-summary-card:nth-child(3) p { color: #318097 !important; }
+
+.theme-dark .portfolio-page .portfolio-summary-card h2 { color: #f8fafc; }
+.theme-dark .portfolio-page .portfolio-summary-card:nth-child(1) p { color: #86efac !important; }
+.theme-dark .portfolio-page .portfolio-summary-card:nth-child(2) p { color: #fca5a5 !important; }
+.theme-dark .portfolio-page .portfolio-summary-card:nth-child(3) p { color: #6ad4f3 !important; }
+
+.theme-light .portfolio-page .portfolio-month-card .border-t {
+  border-color: #e2e8f0;
+}
+
+.page-title {
+  color: #455574 !important;
+}
+
+.theme-dark .page-title {
+  color: #f8fafc !important;
+}
+
+.theme-dark .portfolio-page .portfolio-month-card .text-emerald-600 {
+  color: #86efac;
+}
+
+.theme-dark .portfolio-page .portfolio-month-card .text-red-600 {
+  color: #fca5a5;
+}
+
+/* ─── Transaction List Page ─── Light theme (default) ─── */
+.transaction-month-card {
+  border-color: #e2e8f0;
+  background-color: #ffffff;
+  color: #1e293b;
+  transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
+}
+
+.transaction-month-title {
+  color: #1e293b;
+}
+
+.transaction-row {
+  border-color: #e2e8f0;
+  background-color: #f8fafc;
+  color: #1e293b;
+  transition: background-color 200ms ease, border-color 200ms ease;
+}
+
+.transaction-description {
+  color: #1e293b;
+}
+
+.transaction-meta {
+  color: #64748b;
+}
+
+.transaction-amount-income {
+  color: #059669;
+}
+
+.transaction-amount-expense {
+  color: #dc2626;
+}
+
+.txn-page-btn-secondary {
+  border-color: #e2e8f0;
+  background-color: #ffffff;
+  color: #475569;
+}
+
+.txn-page-btn-secondary:hover {
+  background-color: #f8fafc;
+}
+
+.txn-page-btn-delete {
+  border-color: #fecaca;
+  background-color: #fef2f2;
+  color: #b91c1c;
+}
+
+.txn-page-btn-delete:hover {
+  background-color: #fee2e2;
+}
+
+.txn-page-btn-delete-active {
+  background-color: #dc2626;
+  color: #ffffff;
+  border: none;
+}
+
+.txn-page-btn-delete-active:hover:not(:disabled) {
+  background-color: #b91c1c;
+}
+
+.txn-page-btn-delete-active:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.txn-page-btn-add {
+  background: linear-gradient(135deg, #318097 0%, #2a9d8f 100%);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 2px 8px rgb(49 128 151 / 0.3);
+}
+
+.txn-page-btn-add:hover {
+  background: linear-gradient(135deg, #29707f 0%, #238577 100%);
+  box-shadow: 0 4px 12px rgb(49 128 151 / 0.4);
+  transform: translateY(-1px);
+}
+
+.txn-filter-title {
+  color: #475569;
+}
+
+.txn-filter-active {
+  background-color: #318097;
+  color: #ffffff;
+}
+
+.txn-filter-inactive {
+  background-color: #ffffff;
+  color: #475569;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+  outline: 1px solid #e2e8f0;
+  outline-offset: -1px;
+}
+
+.txn-filter-inactive:hover {
+  background-color: #f8fafc;
+}
+
+.transaction-edit-button {
+  border-color: #cbd5e1;
+  background: #ffffff;
+  color: #455574;
+}
+
+.transaction-edit-button:hover {
+  background: #f1f5f9;
+}
+
+/* ─── Transaction List Page ─── Dark theme ─── */
+.theme-dark .transaction-month-card {
+  border-color: #4b7b89;
+  background-color: #2d748a;
+  color: #f8fafc;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.15);
+}
+
+.theme-dark .transaction-month-title {
+  color: #f8fafc;
+}
+
+.theme-dark .transaction-row {
+  border-color: #3d7180;
+  background-color: rgb(76 165 199 / 0.28);
+  color: #f8fafc;
+}
+
+.theme-dark .transaction-description {
+  color: #f8fafc;
+}
+
+.theme-dark .transaction-meta {
+  color: #b8d4de;
+}
+
+.theme-dark .transaction-amount-income {
+  color: #6ee7b7;
+}
+
+.theme-dark .transaction-amount-expense {
+  color: #fca5a5;
+}
+
+.theme-dark .txn-page-btn-secondary {
+  border-color: #5e92a3;
+  background-color: rgb(148 231 241 / 0.16);
+  color: #f8fafc;
+}
+
+.theme-dark .txn-page-btn-secondary:hover {
+  background-color: rgb(148 231 241 / 0.28);
+}
+
+.theme-dark .txn-page-btn-delete {
+  border-color: #fca5a5;
+  background-color: rgb(239 68 68 / 0.18);
+  color: #fecaca;
+}
+
+.theme-dark .txn-page-btn-delete:hover {
+  background-color: rgb(239 68 68 / 0.28);
+}
+
+.theme-dark .txn-page-btn-delete-active {
+  background-color: #ef4444;
+  color: #ffffff;
+}
+
+.theme-dark .txn-page-btn-delete-active:hover:not(:disabled) {
+  background-color: #dc2626;
+}
+
+.theme-dark .txn-page-btn-add {
+  background: linear-gradient(135deg, #36899e 0%, #2faa9a 100%);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgb(49 128 151 / 0.4);
+}
+
+.theme-dark .txn-page-btn-add:hover {
+  background: linear-gradient(135deg, #3d96ad 0%, #35bba9 100%);
+  box-shadow: 0 4px 14px rgb(49 128 151 / 0.5);
+  transform: translateY(-1px);
+}
+
+.theme-dark .txn-filter-title {
+  color: #e2e8f0;
+}
+
+.theme-dark .txn-filter-active {
+  background-color: #318097;
+  color: #ffffff;
+}
+
+.theme-dark .txn-filter-inactive {
+  background-color: rgb(148 231 241 / 0.12);
+  color: #cbd5e1;
+  box-shadow: none;
+  outline: 1px solid #5e92a3;
+  outline-offset: -1px;
+}
+
+.theme-dark .txn-filter-inactive:hover {
+  background-color: rgb(148 231 241 / 0.22);
+}
+
+.theme-dark .transaction-edit-button {
+  border-color: #5e92a3;
+  background: rgb(148 231 241 / 0.16);
+  color: #f8fafc;
+}
+
+.theme-dark .transaction-edit-button:hover {
+  background: rgb(148 231 241 / 0.28);
+}
+
+/* Landing page styles */
+.landing-hero {
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+}
+
+@media (min-width: 1024px) {
+  .landing-hero h1 {
+    font-size: 2.75rem;
+  }
+}
+
+/* Recurring transactions page – reuses most of the same patterns */
+.theme-dark .recurring-transactions-page .recurring-transaction-card {
+  border-color: #4b7b89;
+  background-color: #2d748a;
+  color: #f8fafc;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.15);
+}
+
+.theme-light .recurring-transactions-page .recurring-transaction-card {
+  border-color: #e2e8f0;
+  background-color: #ffffff;
+  color: #025165;
+}
+
+/* ─── Transaction Form ─── Light theme (default) ─── */
+.transaction-form {
+  border-color: #e2e8f0;
+  background-color: #ffffff;
+  color: #1e293b;
+  transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
+}
+
+.form-label {
+  color: #475569;
+}
+
+.form-input {
+  border-color: #e2e8f0;
+  background-color: #ffffff;
+  color: #1e293b;
+}
+
+.form-input::placeholder {
+  color: #94a3b8;
+}
+
+.form-input:focus {
+  border-color: #318097;
+}
+
+.add-category-link {
+  color: #318097;
+}
+
+.add-category-link:hover {
+  color: #225969;
+}
+
+.transaction-category-panel {
+  background-color: #f1f5f9;
+}
+
+.transaction-recurring-toggle {
+  background-color: #f1f5f9;
+  color: #475569;
+}
+
+.form-cancel-btn {
+  border-color: #e2e8f0;
+  color: #475569;
+}
+
+.form-cancel-btn:hover {
+  background-color: #f8fafc;
+}
+
+.transaction-form-cancel {
+  border-color: #e2e8f0;
+  color: #475569;
+}
+
+.transaction-form-cancel:hover {
+  background-color: #f8fafc;
+}
+
+/* Transaction type toggle buttons – light */
+.type-income-active {
+  border-color: #a7f3d0;
+  background-color: #ecfdf5;
+  color: #047857;
+}
+
+.type-expense-active {
+  border-color: #fecaca;
+  background-color: #fef2f2;
+  color: #b91c1c;
+}
+
+.type-inactive {
+  border-color: #e2e8f0;
+  color: #64748b;
+}
+
+.type-inactive:hover {
+  background-color: #f8fafc;
+}
+
+/* ─── Transaction Form ─── Dark theme ─── */
+.theme-dark .transaction-form {
+  border-color: #4b7b89;
+  background-color: #2d748a;
+  color: #f8fafc;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+}
+
+.theme-dark .form-label {
+  color: #e2e8f0;
+}
+
+.theme-dark .form-input {
+  border-color: #5e92a3;
+  background-color: rgb(76 165 199 / 0.16);
+  color: #f8fafc;
+  color-scheme: dark;
+}
+
+.theme-dark .form-input::placeholder {
+  color: #94b8c4;
+}
+
+.theme-dark .form-input option {
+  background-color: #225969;
+  color: #f8fafc;
+}
+
+.theme-dark .add-category-link {
+  color: #6ad4f3;
+}
+
+.theme-dark .add-category-link:hover {
+  color: #a5e8fa;
+}
+
+.theme-dark .transaction-category-panel {
+  background-color: rgb(148 231 241 / 0.12);
+}
+
+.theme-dark .transaction-recurring-toggle {
+  background-color: rgb(148 231 241 / 0.12);
+  color: #e2e8f0;
+}
+
+.theme-dark .form-cancel-btn {
+  border-color: #5e92a3;
+  color: #e2e8f0;
+}
+
+.theme-dark .form-cancel-btn:hover {
+  background-color: rgb(148 231 241 / 0.16);
+}
+
+.theme-dark .transaction-form-cancel {
+  border-color: #5e92a3;
+  color: #e2e8f0;
+}
+
+.theme-dark .transaction-form-cancel:hover {
+  background-color: rgb(148 231 241 / 0.16);
+}
+
+/* Transaction type toggle buttons – dark */
+.theme-dark .type-income-active {
+  border-color: #6ee7b7;
+  background-color: rgb(16 185 129 / 0.2);
+  color: #bbf7d0;
+}
+
+.theme-dark .type-expense-active {
+  border-color: #fca5a5;
+  background-color: rgb(239 68 68 / 0.18);
+  color: #fecaca;
+}
+
+.theme-dark .type-inactive {
+  border-color: #5e92a3;
+  color: #cbd5e1;
+}
+
+.theme-dark .type-inactive:hover {
+  background-color: rgb(148 231 241 / 0.16);
+}
+
+/* Date input calendar icon visibility fix */
+.form-input[type="date"]::-webkit-calendar-picker-indicator {
+  background-color: #e2e8f0;
+  border-radius: 4px;
+  padding: 4px;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%231e293b" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16px" height="16px"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>');
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  opacity: 0.9;
+  transition: opacity 0.2s, background-color 0.2s;
+}
+
+.form-input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  background-color: #cbd5e1;
+}
+
+.theme-dark .form-input[type="date"]::-webkit-calendar-picker-indicator {
+  background-color: #318097;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%23ffffff" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16px" height="16px"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>');
+}
+
+.theme-dark .form-input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  background-color: #225969;
+}
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: 'Geist Variable', sans-serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}

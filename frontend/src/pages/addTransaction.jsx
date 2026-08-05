@@ -19,7 +19,7 @@ function AddTransaction() {
                     end_date
                 } = data;
                 console.log(data);
-                const responseData = await postRecurringTransaction({
+                await postRecurringTransaction({
                     category_id,
                     repeat_interval,
                     description,
@@ -34,14 +34,13 @@ function AddTransaction() {
             else {
                 const {
                     category_id,
-                    recurring_transaction_id,
                     description,
                     amount,
                     transaction_type,
                     transaction_date
                 } = data;
                 console.log(data);
-                const responseData = await postTransaction({
+                await postTransaction({
                     category_id,
                     recurring_transaction_id: null,
                     description,

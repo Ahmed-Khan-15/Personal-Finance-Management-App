@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Login from "./pages/login.jsx";
 import Signup from "./pages/signup.jsx";
+import Landing from "./pages/landing.jsx";
 import Dashboard from "./pages/dashboard.jsx";
 import Portfolio from "./pages/portfolio.jsx";
 import Transactions from "./pages/transactions.jsx";
@@ -18,6 +19,14 @@ function App() {
     <Routes>
 
       {/* Public Routes */}
+      <Route
+        path="/"
+        element={
+          <PublicRoute>
+            <Landing />
+          </PublicRoute>
+        }
+      />
       <Route
         path="/login"
         element={

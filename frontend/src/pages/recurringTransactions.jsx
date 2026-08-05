@@ -22,6 +22,7 @@ function RecurringTransactions() {
     }
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/set-state-in-effect
         loadTransactions();
     }, []);
 
@@ -45,59 +46,53 @@ function RecurringTransactions() {
 
     // Early Return for Loading State
     if (!transactions) {
-        return <h1 className="text-xl font-semibold text-slate-700">Loading...</h1>;
+        return <h1 className="page-title text-xl font-semibold">Loading...</h1>;
     }
 
     // Render Helpers
     const transactionList = transactions.map((transaction) => {
         return (
-            <div key={transaction.id} className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-                <div><strong className="text-lg text-slate-800">{transaction.description}</strong>
+            <div key={transaction.id} className="recurring-transaction-card flex flex-col gap-4 rounded-2xl border p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                    <strong className="transaction-description block truncate text-lg">{transaction.description}</strong>
+                    <div className="transaction-meta mt-1 flex flex-wrap gap-x-3 gap-y-1 text-sm">
+                        <span className="capitalize">{transaction.transaction_type}</span>
+                        <span className="capitalize">Repeats {transaction.repeat_interval}</span>
+                        <span>Starts {new Date(transaction.start_date).toLocaleDateString()}</span>
+                        <span>Ends {transaction.end_date ? new Date(transaction.end_date).toLocaleDateString() : "Never"}</span>
+                    </div>
+                </div>
 
-                <p>
-                    {transaction.transaction_type === "income"
-                        ? `+${transaction.amount}`
-                        : `-${transaction.amount}`}
-                </p>
-
-                <p>{transaction.transaction_type}</p>
-
-                <p>
-                    Start Date: {new Date(transaction.start_date).toLocaleDateString()}
-                </p>
-                <p>End Date: {
-                    transaction.end_date
-                        ? new Date(transaction.end_date).toLocaleDateString()
-                        : "Never"
-                }</p>
-
-                <p className="text-sm capitalize text-slate-500">{transaction.repeat_interval}</p></div>
-
+                <div className="flex items-center gap-4 sm:justify-end">
+                    <p className={`font-semibold ${transaction.transaction_type === "income" ? "transaction-amount-income" : "transaction-amount-expense"}`}>
+                        {transaction.transaction_type === "income" ? `+${transaction.amount}` : `-${transaction.amount}`}
+                    </p>
                 {deleteMode ? (
-                    <input className="h-4 w-4 rounded border-slate-300 text-red-600 focus:ring-red-500"
+                    <input className="h-4 w-4 rounded text-red-600 focus:ring-red-500"
                         type="checkbox"
                         checked={selectedTransactions.includes(transaction.id)}
                         onChange={() => handleCheckbox(transaction.id)}
                     />
                 ) : (
-                    <button className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50" onClick={() => { navigate(`/edit-recurring-transaction/${transaction.id}`) }}>Edit</button>
+                    <button className="transaction-edit-button rounded-xl border px-4 py-2 text-sm font-medium transition" onClick={() => { navigate(`/edit-recurring-transaction/${transaction.id}`) }}>Edit</button>
                 )}
+                </div>
             </div>
         );
     });
 
     // Main UI
     return (
-        <div className="mx-auto max-w-6xl space-y-7">
-            <div><h1 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">Recurring Transactions</h1></div>
+        <div className="recurring-transactions-page mx-auto max-w-6xl space-y-7">
+            <div><h1 className="page-title text-2xl font-bold tracking-tight sm:text-3xl">Recurring Transactions</h1></div>
 
-            <div className="flex flex-wrap gap-3"><button className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 shadow-sm transition hover:bg-slate-50" onClick={() => navigate("/transactions")}>Transactions</button>
+            <div className="flex flex-wrap gap-3"><button className="txn-page-btn-secondary rounded-xl border px-4 py-2.5 text-sm font-medium shadow-sm transition" onClick={() => navigate("/transactions")}>Transactions</button>
 
-            <button className="rounded-xl bg-[#318097] px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-[#225969]" onClick={() => { navigate("/add-transaction") }}>Add Recurring Transaction</button>
+            <button className="txn-page-btn-add rounded-xl px-4 py-2.5 text-sm font-medium shadow-sm transition" onClick={() => { navigate("/add-transaction") }}>+ Add Recurring Transaction</button>
 
             {deleteMode ? (
                 <>
-                    <button className="rounded-xl bg-red-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                    <button className="txn-page-btn-delete-active rounded-xl px-4 py-2.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50"
                         disabled={selectedTransactions.length === 0}
                         onClick={async () => {
                             await deleteRecurringTransactions(selectedTransactions);
@@ -109,7 +104,7 @@ function RecurringTransactions() {
                         Delete Selected
                     </button>
 
-                    <button className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
+                    <button className="txn-page-btn-secondary rounded-xl border px-4 py-2.5 text-sm font-medium transition"
                         onClick={() => {
                             setDeleteMode(false);
                             setSelectedTransactions([]);
@@ -119,7 +114,7 @@ function RecurringTransactions() {
                     </button>
                 </>
             ) : (
-                <button className="rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700 transition hover:bg-red-100"
+                <button className="txn-page-btn-delete rounded-xl border px-4 py-2.5 text-sm font-medium transition"
                     onClick={() => {
                         setDeleteMode(true);
                         setSelectedTransactions([]);

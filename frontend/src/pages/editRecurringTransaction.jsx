@@ -8,19 +8,17 @@ function EditRecurringTransaction() {
 
     const [transaction, setTransaction] = useState(null);
     
-        // Data Fetching
-        async function loadTransaction() {
-            try {
-                const data = await getRecurringTransactionById(id);
-                setTransaction(data);
-            } catch (error) {
-                console.error(error);
-            }
-        }
-    
         useEffect(() => {
+            async function loadTransaction() {
+                try {
+                    const data = await getRecurringTransactionById(id);
+                    setTransaction(data);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
             loadTransaction();
-        }, []);
+        }, [id]);
 
         if(!transaction){
             return <h1>Loading...</h1>
