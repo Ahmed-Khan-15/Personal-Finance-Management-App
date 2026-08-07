@@ -7,13 +7,8 @@ const pool = new Pool({
     },
 });
 
-module.exports = pool;
+pool.on("error", (err) => {
+    console.error("Unexpected PostgreSQL pool error:", err);
+});
 
-pool.connect()
-    .then(()=>{
-        console.log("connected to postgresql");
-    })
-    .catch((err)=>{
-        console.error("database connection failed");
-        console.error(err);
-    })
+module.exports = pool;
