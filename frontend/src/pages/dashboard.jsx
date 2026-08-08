@@ -157,7 +157,7 @@ function Dashboard() {
                 <div className="dashboard-summary-card [&>div]:border-[#96daf0] [&>div]:bg-[#5f8e941a] [&>div]:shadow-black/10">
                     <Card>
                     <h2 className="text-sm font-medium text-[#FFFFFF]">Income</h2>
-                    <p className="mt-3 text-2xl font-bold text-emerald-600">
+                    <p className="mt-3 text-2xl font-bold text-[#86efac]">
                         Rs. <CountUp to={Number(dashboard.income)} separator="," duration={.05} />
                     </p>
                     </Card>

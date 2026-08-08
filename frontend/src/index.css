@@ -25,6 +25,14 @@
   transition: background-color 200ms ease, color 200ms ease;
 }
 
+.theme-dark.app-shell {
+  background-color: #025165;
+}
+
+.theme-light.app-shell {
+  background-color: #f8fafc;
+}
+
 .theme-dark .page-theme {
   background: #025165;
 }
@@ -87,6 +95,9 @@
 .theme-dark .dashboard-summary-card:nth-child(1) p { color: #86efac !important; }
 .theme-dark .dashboard-summary-card:nth-child(2) p { color: #fca5a5 !important; }
 .theme-dark .dashboard-summary-card:nth-child(3) p { color: #6ad4f3 !important; }
+
+/* Dashboard transaction rows use the same accessible green as the income summary. */
+.theme-dark .dashboard-page .text-emerald-600 { color: #86efac !important; }
 
 /* Make the rest of the protected pages equally usable in dark mode. */
 .theme-dark .page-theme :is(.bg-white, .bg-slate-50) {
